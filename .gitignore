@@ -1,0 +1,15 @@
+# Screenshots
+temporary screenshots/
+
+# Large binaries
+*.dmg
+
+# Claude config
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Reference images
+www.iertqa.com_.png

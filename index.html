@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bingo Home Buyers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              950: '#0a0f1a',
+              900: '#0f1a2e',
+              800: '#142440',
+              700: '#1a3050',
+            },
+            brand: {
+              red: '#d63031',
+              'red-light': '#e74c3c',
+              'red-dark': '#c0392b',
+              teal: '#14374a',
+            },
+          },
+          fontFamily: {
+            display: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            body: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0a0f1a;
+      color: #f9f8f8;
+      font-family: 'Inter', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Glass card ── */
+    .glass-card {
+      position: relative;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(24px) saturate(1.4);
+      -webkit-backdrop-filter: blur(24px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 24px;
+      transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .glass-card:hover {
+      background: rgba(255,255,255,0.10);
+      border-color: rgba(255,255,255,0.17);
+      transform: translateY(-4px);
+    }
+
+    /* ── Glow card (liquid glass style) ── */
+    .glow-card {
+      position: relative;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(32px) saturate(1.6);
+      -webkit-backdrop-filter: blur(32px) saturate(1.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      transition: border-color 0.3s ease, background 0.3s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .glow-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(214,48,49,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .glow-card:hover {
+      border-color: rgba(214,48,49,0.22);
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-4px);
+    }
+
+    /* ── Hero house animation ── */
+    .hero-icon {
+      animation: float 7s ease-in-out infinite;
+      filter: drop-shadow(0 0 60px rgba(214,48,49,0.12)) drop-shadow(0 0 120px rgba(10,15,26,0.8));
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0px) rotate(0deg); }
+      33%      { transform: translateY(-14px) rotate(1deg); }
+      66%      { transform: translateY(-6px) rotate(-0.5deg); }
+    }
+
+    /* ── Radial glow blob ── */
+    .radial-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+
+    /* ── Noise texture ── */
+    .noise-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    /* ── Nav ── */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      transition: background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+      background: transparent;
+    }
+    #navbar.scrolled {
+      background: rgba(10,15,26,0.94);
+      backdrop-filter: blur(20px) saturate(1.5);
+      -webkit-backdrop-filter: blur(20px) saturate(1.5);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #d63031;
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      padding: 13px 26px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease;
+      box-shadow: 0 4px 24px rgba(214,48,49,0.25), 0 0 0 0 rgba(214,48,49,0);
+    }
+    .btn-primary:hover {
+      background: #e74c3c;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 36px rgba(214,48,49,0.35);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:focus-visible { outline: 2px solid #d63031; outline-offset: 3px; }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: #f9f8f8;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 12px 24px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.18);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.35);
+      transform: translateY(-2px);
+    }
+    .btn-outline:active { transform: translateY(0); }
+    .btn-outline:focus-visible { outline: 2px solid #d63031; outline-offset: 3px; }
+
+    /* ── Nav link ── */
+    .nav-link {
+      color: rgba(249,248,248,0.7);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 4px 0;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 1px;
+      background: rgba(214,48,49,0.7);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .nav-link:hover { color: #f9f8f8; }
+    .nav-link:hover::after { transform: scaleX(1); }
+    .nav-link:focus-visible { outline: 2px solid #d63031; outline-offset: 3px; border-radius: 2px; }
+    .nav-link.tubelight-active { color: #f9f8f8; }
+    .nav-link.tubelight-active::after { transform: scaleX(0) !important; }
+
+    /* ── Tubelight nav indicator ── */
+    #tubelight {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 0;
+      transition: opacity 0.35s ease,
+                  left 0.45s cubic-bezier(0.25, 1, 0.5, 1),
+                  width 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    #navbar.scrolled #tubelight.visible {
+      opacity: 1;
+    }
+    .tubelight-pill {
+      position: absolute;
+      top: 50%;
+      left: -12px;
+      right: -12px;
+      transform: translateY(-50%);
+      height: 36px;
+      background: rgba(214,48,49,0.07);
+      border: 1px solid rgba(214,48,49,0.12);
+      border-radius: 100px;
+    }
+    .tubelight-bar {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36%;
+      height: 2px;
+      background: #d63031;
+      border-radius: 0 0 4px 4px;
+    }
+    .tubelight-glow {
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 55%;
+      height: 8px;
+      background: rgba(214,48,49,0.55);
+      filter: blur(6px);
+      border-radius: 50%;
+    }
+    .tubelight-glow-wide {
+      position: absolute;
+      top: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      height: 14px;
+      background: rgba(214,48,49,0.22);
+      filter: blur(14px);
+      border-radius: 50%;
+    }
+
+    /* ── Icon ring ── */
+    .icon-ring {
+      width: 52px;
+      height: 52px;
+      border-radius: 15px;
+      background: rgba(214,48,49,0.10);
+      border: 1px solid rgba(214,48,49,0.20);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Brand tile ── */
+    .brand-tile {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .brand-tile:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    /* ── Stat divider ── */
+    .stat-divider {
+      width: 1px;
+      height: 44px;
+      background: rgba(255,255,255,0.10);
+      flex-shrink: 0;
+    }
+
+    /* ── Scroll indicator ── */
+    .scroll-dot {
+      width: 5px;
+      height: 5px;
+      background: rgba(214,48,49,0.8);
+      border-radius: 50%;
+      animation: scrollPulse 2.2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.4; transform: translateY(0); }
+      50%      { opacity: 1;   transform: translateY(9px); }
+    }
+
+    /* ── Section pill label ── */
+    .section-pill {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(214,48,49,0.85);
+      font-weight: 600;
+      margin-bottom: 22px;
+      padding: 6px 18px;
+      background: rgba(214,48,49,0.08);
+      border: 1px solid rgba(214,48,49,0.16);
+      border-radius: 100px;
+    }
+
+    /* ── Footer link ── */
+    .footer-link {
+      color: rgba(249,248,248,0.48);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s ease;
+    }
+    .footer-link:hover { color: #d63031; }
+    .footer-link:focus-visible { outline: 2px solid #d63031; outline-offset: 3px; border-radius: 2px; color: #d63031; }
+
+    /* ── Social icon button ── */
+    .social-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .social-btn:hover {
+      background: rgba(214,48,49,0.12);
+      border-color: rgba(214,48,49,0.30);
+    }
+    .social-btn:focus-visible { outline: 2px solid #d63031; outline-offset: 3px; }
+
+    /* ── Logo mark ── */
+    .logo-mark { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark:focus-visible { outline: 2px solid #d63031; outline-offset: 3px; border-radius: 4px; }
+
+    /* ── Form inputs ── */
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #f9f8f8;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .form-input::placeholder { color: rgba(249,248,248,0.35); }
+    .form-input:focus {
+      border-color: rgba(214,48,49,0.50);
+      background: rgba(255,255,255,0.09);
+    }
+    .form-input:hover:not(:focus) {
+      border-color: rgba(255,255,255,0.18);
+    }
+    select.form-input {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='rgba(249,248,248,0.4)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+    select.form-input option {
+      background: #141d2e;
+      color: #f9f8f8;
+    }
+
+    /* ── Glowing Card Effect ── */
+    .glow-wrap .glow-overlay {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      z-index: 10;
+    }
+    .glow-wrap .glow-ring {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+    }
+    .glow-wrap .glow-ring::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border: 3px solid transparent;
+      border-radius: inherit;
+      background:
+        repeating-conic-gradient(
+          from 236.84deg at 50% 50%,
+          #d63031 0%,
+          #c0392b 10%,
+          #d63031 20%
+        );
+      background-attachment: fixed;
+      opacity: var(--glow-active, 0);
+      transition: opacity 0.35s ease;
+      -webkit-mask-clip: padding-box, border-box;
+      mask-clip: padding-box, border-box;
+      -webkit-mask-composite: source-in;
+      mask-composite: intersect;
+      -webkit-mask-image:
+        linear-gradient(#0000, #0000),
+        conic-gradient(
+          from calc((var(--glow-start, 0) - var(--glow-spread, 40)) * 1deg),
+          #00000000 0deg, #fff, #00000000 calc(var(--glow-spread, 40) * 2deg)
+        );
+      mask-image:
+        linear-gradient(#0000, #0000),
+        conic-gradient(
+          from calc((var(--glow-start, 0) - var(--glow-spread, 40)) * 1deg),
+          #00000000 0deg, #fff, #00000000 calc(var(--glow-spread, 40) * 2deg)
+        );
+    }
+    /* Soft outer blur layer for ambient glow */
+    .glow-wrap .glow-blur {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      z-index: 9;
+    }
+    .glow-wrap .glow-blur::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border: 5px solid transparent;
+      border-radius: inherit;
+      background:
+        repeating-conic-gradient(
+          from 236.84deg at 50% 50%,
+          #d63031 0%,
+          #c0392b 10%,
+          #d63031 20%
+        );
+      background-attachment: fixed;
+      opacity: var(--glow-active, 0);
+      transition: opacity 0.35s ease;
+      filter: blur(8px);
+      -webkit-mask-clip: padding-box, border-box;
+      mask-clip: padding-box, border-box;
+      -webkit-mask-composite: source-in;
+      mask-composite: intersect;
+      -webkit-mask-image:
+        linear-gradient(#0000, #0000),
+        conic-gradient(
+          from calc((var(--glow-start, 0) - var(--glow-spread, 40)) * 1deg),
+          #00000000 0deg, #fff, #00000000 calc(var(--glow-spread, 40) * 2deg)
+        );
+      mask-image:
+        linear-gradient(#0000, #0000),
+        conic-gradient(
+          from calc((var(--glow-start, 0) - var(--glow-spread, 40)) * 1deg),
+          #00000000 0deg, #fff, #00000000 calc(var(--glow-spread, 40) * 2deg)
+        );
+    }
+
+    /* ── Checkbox ── */
+    .consent-check {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      cursor: pointer;
+    }
+    .consent-check input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.05);
+      cursor: pointer;
+      position: relative;
+      margin-top: 1px;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .consent-check input[type="checkbox"]:checked {
+      background: #d63031;
+      border-color: #d63031;
+    }
+    .consent-check input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 5px;
+      width: 5px; height: 9px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .consent-check input[type="checkbox"]:focus-visible {
+      outline: 2px solid #d63031;
+      outline-offset: 2px;
+    }
+    .consent-check span {
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: rgba(249,248,248,0.40);
+    }
+    .consent-check span a {
+      color: rgba(214,48,49,0.75);
+      text-decoration: underline;
+      text-decoration-color: rgba(214,48,49,0.3);
+      transition: color 0.2s ease;
+    }
+    .consent-check span a:hover { color: #d63031; }
+
+    /* ── Animated gradient orbs ── */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(120px);
+      opacity: 0.07;
+      will-change: transform;
+    }
+    .bg-orb--1 {
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, #d63031 0%, transparent 70%);
+      top: 10%; left: -15%;
+      animation: orbDrift1 28s ease-in-out infinite;
+    }
+    .bg-orb--2 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, #14374a 0%, transparent 70%);
+      top: 45%; right: -10%;
+      animation: orbDrift2 34s ease-in-out infinite;
+    }
+    .bg-orb--3 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #d63031 0%, transparent 70%);
+      bottom: 5%; left: 25%;
+      animation: orbDrift3 24s ease-in-out infinite;
+    }
+    .bg-orb--4 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #14374a 0%, transparent 70%);
+      top: 20%; right: 30%;
+      animation: orbDrift4 30s ease-in-out infinite;
+    }
+    @keyframes orbDrift1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25%      { transform: translate(80px, 60px) scale(1.08); }
+      50%      { transform: translate(-40px, 120px) scale(0.95); }
+      75%      { transform: translate(60px, -30px) scale(1.04); }
+    }
+    @keyframes orbDrift2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25%      { transform: translate(-70px, -80px) scale(1.06); }
+      50%      { transform: translate(50px, -40px) scale(0.92); }
+      75%      { transform: translate(-30px, 70px) scale(1.1); }
+    }
+    @keyframes orbDrift3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(100px, -50px) scale(1.1); }
+      66%      { transform: translate(-60px, -80px) scale(0.94); }
+    }
+    @keyframes orbDrift4 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(-50px, 90px) scale(0.96); }
+      66%      { transform: translate(70px, 40px) scale(1.07); }
+    }
+
+    /* ── Parallax glow ── */
+    .radial-glow[data-parallax] {
+      will-change: transform;
+      transition: none;
+    }
+
+    /* ── Scroll reveal animations ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0) rotateX(0) rotateY(0) scale(1);
+    }
+    .reveal-stagger-1 { transition-delay: 0.1s; }
+    .reveal-stagger-2 { transition-delay: 0.22s; }
+    .reveal-stagger-3 { transition-delay: 0.34s; }
+    .reveal-stagger-4 { transition-delay: 0.46s; }
+
+    /* Slide from left */
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-120px) translateY(20px);
+      transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-left.visible {
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+    }
+
+    /* Slide from right */
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(120px) translateY(20px);
+      transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.95s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-right.visible {
+      opacity: 1;
+      transform: translateX(0) translateY(0);
+    }
+
+    /* 3D card tilt — cards appear to flip up from below */
+    .reveal-3d {
+      opacity: 0;
+      transform: perspective(800px) rotateX(16deg) translateY(70px) scale(0.92);
+      transform-origin: bottom center;
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-3d.visible {
+      opacity: 1;
+      transform: perspective(800px) rotateX(0) translateY(0) scale(1);
+    }
+
+    /* Scale up — zoom in from smaller */
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.82) translateY(40px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-scale.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Lift up — 3D rise for CTA */
+    .reveal-lift {
+      opacity: 0;
+      transform: perspective(600px) rotateX(10deg) translateY(80px);
+      transform-origin: bottom center;
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-lift.visible {
+      opacity: 1;
+      transform: perspective(600px) rotateX(0) translateY(0);
+    }
+
+    /* ── Responsive helpers ── */
+    @media (max-width: 960px) {
+      #hero > div:nth-child(4) {
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+        text-align: center;
+      }
+      #hero > div:nth-child(4) > div:first-child > div {
+        justify-content: center;
+      }
+    }
+    @media (max-width: 768px) {
+      .desktop-nav { display: none !important; }
+      .mobile-toggle { display: flex !important; }
+      .stat-divider { display: none; }
+      .stats-row { flex-direction: column; gap: 32px !important; align-items: center; }
+    }
+    @media (min-width: 769px) {
+      .mobile-toggle { display: none !important; }
+      .mobile-menu-panel { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ ANIMATED BACKGROUND ORBS ══ -->
+  <div class="bg-orb bg-orb--1" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb--2" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb--3" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb--4" aria-hidden="true"></div>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <div style="max-width:1200px;margin:0 auto;padding:0 32px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;height:92px;">
+
+        <!-- Logo -->
+        <a href="#" class="logo-mark" aria-label="Bingo Home Buyers Home">
+          <img src="Brand_assets/bingo_logo_transparent.png" alt="Bingo Home Buyers" style="height:110px;width:auto;object-fit:contain;margin:-14px 0;">
+        </a>
+
+        <!-- Desktop nav -->
+        <div class="desktop-nav" style="position:relative;display:flex;align-items:center;gap:36px;">
+          <a href="#how-it-works" class="nav-link">How It Works</a>
+          <a href="#about"        class="nav-link">About</a>
+          <a href="#services"     class="nav-link">Situations</a>
+          <a href="#areas"        class="nav-link">Areas We Serve</a>
+          <a href="#reviews"      class="nav-link">Reviews</a>
+          <a href="#hero"      class="btn-primary" style="padding:10px 22px;font-size:13px;">Get My Cash Offer</a>
+          <!-- Tubelight indicator -->
+          <div id="tubelight" aria-hidden="true">
+            <div class="tubelight-pill"></div>
+            <div class="tubelight-bar"></div>
+            <div class="tubelight-glow"></div>
+            <div class="tubelight-glow-wide"></div>
+          </div>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button id="mobile-toggle" class="mobile-toggle" aria-label="Open menu" aria-expanded="false"
+          style="display:none;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.10);cursor:pointer;transition:background 0.2s ease;">
+          <svg id="hamburger-icon" width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true">
+            <rect y="0" width="18" height="2" rx="1" fill="#f9f8f8"/>
+            <rect y="5" width="13" height="2" rx="1" fill="#f9f8f8"/>
+            <rect y="10" width="18" height="2" rx="1" fill="#f9f8f8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu panel -->
+    <div id="mobile-menu-panel" class="mobile-menu-panel"
+      style="display:none;padding:16px 32px 28px;border-top:1px solid rgba(255,255,255,0.07);background:rgba(10,15,26,0.97);backdrop-filter:blur(24px);">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <a href="#how-it-works" class="nav-link" style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.05);">How It Works</a>
+        <a href="#about"        class="nav-link" style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.05);">About</a>
+        <a href="#services"     class="nav-link" style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.05);">Situations</a>
+        <a href="#areas"        class="nav-link" style="padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.05);">Areas We Serve</a>
+        <a href="#reviews"      class="nav-link" style="padding:11px 0;">Reviews</a>
+        <a href="#hero"      class="btn-primary" style="margin-top:16px;justify-content:center;">Get My Cash Offer</a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ══ HERO ══ -->
+  <section id="hero" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 32px 80px;overflow:hidden;position:relative;">
+    <!-- Background glows -->
+    <div class="radial-glow" data-parallax="0.04" style="width:700px;height:700px;background:radial-gradient(circle,rgba(20,55,74,0.55) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-52%);z-index:0;"></div>
+    <div class="radial-glow" data-parallax="0.06" style="width:340px;height:340px;background:radial-gradient(circle,rgba(214,48,49,0.06) 0%,transparent 70%);top:38%;left:50%;transform:translate(-50%,-50%);z-index:0;"></div>
+    <div class="noise-overlay"></div>
+
+    <div style="position:relative;z-index:2;max-width:1200px;width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;">
+
+      <!-- Left: Headline -->
+      <div>
+        <div class="section-pill" style="margin-bottom:18px;">Ohio's Trusted Cash Home Buyers</div>
+        <h1 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(38px,5.5vw,72px);font-weight:800;line-height:1.04;letter-spacing:-0.045em;color:#f9f8f8;margin:0 0 16px;">
+          Sell Your House<br>
+          Fast for <em style="font-style:italic;color:#d63031;font-weight:800;">Cash</em>
+        </h1>
+        <p style="font-size:clamp(15px,1.6vw,18px);color:rgba(249,248,248,0.55);line-height:1.72;max-width:460px;margin:0 0 36px;font-weight:400;">
+          No repairs, no agents, no hassle. We buy houses across Ohio for cash — get a fair offer in as little as 24 hours and close on your timeline.
+        </p>
+        <div style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">No Fees or Commissions</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">Close in as Few as 7 Days</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;margin-top:14px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">Any Condition, Any Situation</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">Cash in Your Hands at Close</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Lead capture form -->
+      <div class="glow-card" style="padding:36px 32px;">
+        <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#f9f8f8;margin:0 0 6px;text-align:center;">Get Your Free Cash Offer</h2>
+        <p style="font-size:13px;color:rgba(249,248,248,0.45);text-align:center;margin:0 0 24px;">Fill out the form below and we'll reach out within 24 hours.</p>
+
+        <form id="lead-form" onsubmit="return false;" style="display:flex;flex-direction:column;gap:14px;">
+          <!-- Name row -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <input type="text" class="form-input" placeholder="First Name" required aria-label="First Name">
+            <input type="text" class="form-input" placeholder="Last Name" required aria-label="Last Name">
+          </div>
+          <!-- Address -->
+          <input type="text" class="form-input" placeholder="Property Address" required aria-label="Property Address">
+          <!-- City / State / Zip -->
+          <div style="display:grid;grid-template-columns:1fr 100px 110px;gap:12px;">
+            <input type="text" class="form-input" placeholder="City" required aria-label="City">
+            <select class="form-input" required aria-label="State">
+              <option value="" disabled selected>State</option>
+              <option value="AL">AL</option><option value="AK">AK</option><option value="AZ">AZ</option><option value="AR">AR</option>
+              <option value="CA">CA</option><option value="CO">CO</option><option value="CT">CT</option><option value="DE">DE</option>
+              <option value="FL">FL</option><option value="GA">GA</option><option value="HI">HI</option><option value="ID">ID</option>
+              <option value="IL">IL</option><option value="IN">IN</option><option value="IA">IA</option><option value="KS">KS</option>
+              <option value="KY">KY</option><option value="LA">LA</option><option value="ME">ME</option><option value="MD">MD</option>
+              <option value="MA">MA</option><option value="MI">MI</option><option value="MN">MN</option><option value="MS">MS</option>
+              <option value="MO">MO</option><option value="MT">MT</option><option value="NE">NE</option><option value="NV">NV</option>
+              <option value="NH">NH</option><option value="NJ">NJ</option><option value="NM">NM</option><option value="NY">NY</option>
+              <option value="NC">NC</option><option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option>
+              <option value="OR">OR</option><option value="PA">PA</option><option value="RI">RI</option><option value="SC">SC</option>
+              <option value="SD">SD</option><option value="TN">TN</option><option value="TX">TX</option><option value="UT">UT</option>
+              <option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WV">WV</option>
+              <option value="WI">WI</option><option value="WY">WY</option>
+            </select>
+            <input type="text" class="form-input" placeholder="Zip Code" required aria-label="Zip Code" maxlength="10" inputmode="numeric">
+          </div>
+          <!-- Phone -->
+          <input type="tel" class="form-input" placeholder="Phone Number" required aria-label="Phone Number">
+          <!-- Condition dropdown -->
+          <select class="form-input" required aria-label="Condition of Home">
+            <option value="" disabled selected>Condition of Home</option>
+            <option value="excellent">Excellent — Move-in ready</option>
+            <option value="good">Good — Minor cosmetic updates</option>
+            <option value="fair">Fair — Needs some repairs</option>
+            <option value="poor">Poor — Major repairs needed</option>
+            <option value="vacant">Vacant / Abandoned</option>
+            <option value="unknown">Not Sure</option>
+          </select>
+
+          <!-- Consent checkboxes -->
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+            <label class="consent-check">
+              <input type="checkbox" required>
+              <span>I agree to the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a>.</span>
+            </label>
+            <label class="consent-check">
+              <input type="checkbox" required>
+              <span>I consent to receive transactional texts, calls, and emails from Bingo Home Buyers about my inquiry (property details, responses, appointments). Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply.</span>
+            </label>
+            <label class="consent-check">
+              <input type="checkbox" required>
+              <span>I consent to receive marketing texts, calls, and emails from Bingo Home Buyers, including property offers and promotions. Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply.</span>
+            </label>
+            <p style="font-size:10.5px;color:rgba(249,248,248,0.28);line-height:1.5;margin:0;">Your information is secure and will not be sold or shared with third parties.</p>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px 28px;margin-top:4px;">
+            Get My Cash Offer
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Scroll indicator -->
+    <div style="position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <span style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(214,48,49,0.55);font-weight:500;">Scroll</span>
+      <div class="scroll-dot"></div>
+    </div>
+  </section>
+
+
+  <!-- ══ FEATURE CARDS ══ -->
+  <section id="how-it-works" style="padding:100px 32px;background:#0a0f1a;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:56px;">
+        <div class="section-pill">How It Works</div>
+        <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(30px,4.5vw,54px);font-weight:800;letter-spacing:-0.035em;color:#f9f8f8;margin:0;">Three Simple Steps</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+
+        <!-- Card: Contact Us -->
+        <div class="glow-card" style="padding:36px 32px;">
+          <div class="icon-ring" style="margin-bottom:22px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke="#d63031" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(214,48,49,0.65);font-weight:600;margin-bottom:8px;">Step 1</div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:18px;letter-spacing:-0.025em;margin:0 0 10px;color:#f9f8f8;">Contact Us</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.52);line-height:1.72;margin:0;">Tell us about your property — any condition, any situation. We'll respond within 24 hours with a no-obligation cash offer.</p>
+        </div>
+
+        <!-- Card: Get Your Offer -->
+        <div class="glow-card" style="padding:36px 32px;">
+          <div class="icon-ring" style="margin-bottom:22px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="#d63031" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(214,48,49,0.65);font-weight:600;margin-bottom:8px;">Step 2</div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:18px;letter-spacing:-0.025em;margin:0 0 10px;color:#f9f8f8;">Get Your Cash Offer</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.52);line-height:1.72;margin:0;">We'll evaluate your home and present a fair, transparent cash offer — no hidden fees, no commissions, no surprises.</p>
+        </div>
+
+        <!-- Card: Close & Get Paid -->
+        <div class="glow-card" style="padding:36px 32px;">
+          <div class="icon-ring" style="margin-bottom:22px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(214,48,49,0.65);font-weight:600;margin-bottom:8px;">Step 3</div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:18px;letter-spacing:-0.025em;margin:0 0 10px;color:#f9f8f8;">Close &amp; Get Paid</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.52);line-height:1.72;margin:0;">Pick your closing date — as fast as 7 days or on your schedule. We handle all the paperwork. You walk away with cash.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ WE BUY WITH CONFIDENCE ══ -->
+  <section id="about" style="padding:100px 32px;background:linear-gradient(180deg,#0a0f1a 0%,#0d1525 50%,#0a0f1a 100%);text-align:center;overflow:hidden;position:relative;">
+    <div class="noise-overlay"></div>
+    <div class="radial-glow" data-parallax="0.05" style="width:800px;height:420px;background:radial-gradient(ellipse,rgba(20,55,74,0.40) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;"></div>
+    <div style="max-width:880px;margin:0 auto;position:relative;z-index:2;">
+      <div class="section-pill">Why Bingo</div>
+      <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(38px,6.5vw,80px);font-weight:800;line-height:1.04;letter-spacing:-0.045em;color:#f9f8f8;margin:0 0 16px;">
+        Sell with <em style="font-style:italic;color:#d63031;">Certainty.</em><br>
+        Sell with <em style="font-style:italic;color:#d63031;">Bingo!</em>
+      </h2>
+      <p style="font-size:clamp(15px,1.8vw,18px);color:rgba(249,248,248,0.55);line-height:1.76;max-width:580px;margin:0 auto;">
+        Life changes fast — divorce, relocation, inherited property, or just ready to move on. Whatever your reason, we make selling simple. No listing, no showings, no waiting. Just a fair offer and a fast close.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ══ SERVICES ══ -->
+  <section id="services" style="padding:100px 32px;background:#0a0f1a;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:64px;">
+        <div class="section-pill">We Can Help</div>
+        <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(30px,4.5vw,54px);font-weight:800;letter-spacing:-0.035em;color:#f9f8f8;margin:0;">We Buy Houses In Any Situation</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;">
+
+        <div class="glass-card" style="padding:36px 30px;">
+          <div class="icon-ring" style="margin-bottom:22px;border-radius:14px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke="#d63031" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 22V12h6v10" stroke="#d63031" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.02em;color:#f9f8f8;margin:0 0 10px;">Foreclosure</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.48);line-height:1.72;margin:0;">Facing foreclosure? We can close fast and help you avoid the lasting impact on your credit and financial future.</p>
+        </div>
+
+        <div class="glass-card" style="padding:36px 30px;">
+          <div class="icon-ring" style="margin-bottom:22px;border-radius:14px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="#d63031" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="#d63031" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="#d63031" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.02em;color:#f9f8f8;margin:0 0 10px;">Inherited Property</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.48);line-height:1.72;margin:0;">Inherited a house you don't need? Skip the hassle of repairs and listing — we'll buy it as-is, fast.</p>
+        </div>
+
+        <div class="glass-card" style="padding:36px 30px;">
+          <div class="icon-ring" style="margin-bottom:22px;border-radius:14px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#d63031" stroke-width="1.5"/><path d="M12 6v6l4 2" stroke="#d63031" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.02em;color:#f9f8f8;margin:0 0 10px;">Relocating Fast</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.48);line-height:1.72;margin:0;">Need to move quickly for a job or life change? We close on your timeline so you can focus on what's next.</p>
+        </div>
+
+        <div class="glass-card" style="padding:36px 30px;">
+          <div class="icon-ring" style="margin-bottom:22px;border-radius:14px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke="#d63031" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.02em;color:#f9f8f8;margin:0 0 10px;">Needs Major Repairs</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.48);line-height:1.72;margin:0;">Foundation issues, roof damage, mold — we buy houses in any condition. No repairs needed before you sell.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ AREAS WE SERVE ══ -->
+  <section id="areas" style="padding:100px 32px;background:linear-gradient(180deg,#0a0f1a 0%,#0d1525 50%,#0a0f1a 100%);overflow:hidden;position:relative;">
+    <div class="noise-overlay"></div>
+    <div class="radial-glow" data-parallax="0.07" style="width:800px;height:420px;background:radial-gradient(ellipse,rgba(20,55,74,0.35) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;"></div>
+    <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;">
+
+      <div style="text-align:center;margin-bottom:64px;">
+        <div class="section-pill">Service Areas</div>
+        <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(30px,4.5vw,54px);font-weight:800;letter-spacing:-0.035em;color:#f9f8f8;margin:0 0 16px;">Areas We Serve</h2>
+        <p style="font-size:clamp(15px,1.8vw,18px);color:rgba(249,248,248,0.50);line-height:1.72;max-width:520px;margin:0 auto;">We buy houses across Ohio. If your property is in one of these areas, we want to hear from you.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;">
+
+        <!-- Cleveland -->
+        <div class="glow-card" style="padding:36px 32px;text-align:center;">
+          <div class="icon-ring" style="margin:0 auto 22px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="#d63031" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="#d63031" stroke-width="1.5"/></svg>
+          </div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.025em;margin:0 0 8px;color:#f9f8f8;">Cleveland</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.48);line-height:1.72;margin:0;">Serving Cleveland and the greater Northeast Ohio area — Akron, Lakewood, Parma, and surrounding communities.</p>
+        </div>
+
+        <!-- Dayton -->
+        <div class="glow-card" style="padding:36px 32px;text-align:center;">
+          <div class="icon-ring" style="margin:0 auto 22px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="#d63031" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="#d63031" stroke-width="1.5"/></svg>
+          </div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.025em;margin:0 0 8px;color:#f9f8f8;">Dayton</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.48);line-height:1.72;margin:0;">Covering Dayton and the Miami Valley region — Kettering, Beavercreek, Springfield, and nearby areas.</p>
+        </div>
+
+        <!-- Columbus -->
+        <div class="glow-card" style="padding:36px 32px;text-align:center;">
+          <div class="icon-ring" style="margin:0 auto 22px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="#d63031" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="#d63031" stroke-width="1.5"/></svg>
+          </div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.025em;margin:0 0 8px;color:#f9f8f8;">Columbus</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.48);line-height:1.72;margin:0;">Active throughout Columbus and Central Ohio — Dublin, Westerville, Grove City, and surrounding neighborhoods.</p>
+        </div>
+
+        <!-- Cincinnati -->
+        <div class="glow-card" style="padding:36px 32px;text-align:center;">
+          <div class="icon-ring" style="margin:0 auto 22px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="#d63031" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="10" r="3" stroke="#d63031" stroke-width="1.5"/></svg>
+          </div>
+          <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.025em;margin:0 0 8px;color:#f9f8f8;">Cincinnati</h3>
+          <p style="font-size:14px;color:rgba(249,248,248,0.48);line-height:1.72;margin:0;">Buying homes across Cincinnati and the Tri-State area — Mason, Hamilton, Fairfield, and beyond.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ TRUST & STATS ══ -->
+  <section id="reviews" style="padding:100px 32px;background:linear-gradient(180deg,#0a0f1a 0%,#0b1220 100%);">
+    <div style="max-width:1200px;margin:0 auto;">
+
+      <div style="text-align:center;margin-bottom:56px;">
+        <div class="section-pill">Trusted</div>
+        <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(28px,4vw,46px);font-weight:800;letter-spacing:-0.035em;color:#f9f8f8;margin:0;">Homeowners Trust Bingo</h2>
+      </div>
+
+      <!-- Testimonial cards -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:56px;">
+        <div class="glass-card" style="padding:32px 28px;">
+          <div style="display:flex;gap:4px;margin-bottom:16px;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+          </div>
+          <p style="font-size:14px;color:rgba(249,248,248,0.6);line-height:1.72;margin:0 0 18px;font-style:italic;">"I was months behind on my mortgage and facing foreclosure. Bingo stepped in, gave me a fair cash offer, and closed in under two weeks. They saved my credit and gave me a fresh start."</p>
+          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:14px;color:#f9f8f8;">— Melissa W.</div>
+          <div style="font-size:12px;color:rgba(249,248,248,0.35);margin-top:2px;">Homeowner, Columbus OH</div>
+        </div>
+
+        <div class="glass-card" style="padding:32px 28px;">
+          <div style="display:flex;gap:4px;margin-bottom:16px;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+          </div>
+          <p style="font-size:14px;color:rgba(249,248,248,0.6);line-height:1.72;margin:0 0 18px;font-style:italic;">"I had a vacant property sitting empty for over a year — it was attracting vandals and costing me in taxes. Bingo bought it as-is with no inspections and no hassle. Wish I'd called them sooner."</p>
+          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:14px;color:#f9f8f8;">— Roberta J.</div>
+          <div style="font-size:12px;color:rgba(249,248,248,0.35);margin-top:2px;">Homeowner, Cincinnati OH</div>
+        </div>
+
+        <div class="glass-card" style="padding:32px 28px;">
+          <div style="display:flex;gap:4px;margin-bottom:16px;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#d63031"><path d="M8 0l2.47 4.97L16 5.76l-4 3.9.94 5.5L8 12.68l-4.94 2.5.94-5.5-4-3.9 5.53-.8z"/></svg>
+          </div>
+          <p style="font-size:14px;color:rgba(249,248,248,0.6);line-height:1.72;margin:0 0 18px;font-style:italic;">"I was a tired landlord dealing with problem tenants and constant repairs. Bingo took the property off my hands quickly and gave me a fair price. No more late-night phone calls — just peace of mind."</p>
+          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:14px;color:#f9f8f8;">— Doris F.</div>
+          <div style="font-size:12px;color:rgba(249,248,248,0.35);margin-top:2px;">Homeowner, Dayton OH</div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="glass-card" style="padding:44px 56px;">
+        <div class="stats-row" style="display:flex;align-items:center;justify-content:space-around;gap:40px;flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(40px,5vw,60px);font-weight:800;letter-spacing:-0.045em;color:#d63031;line-height:1;">500<sup style="font-size:0.55em;opacity:0.75;vertical-align:super;">+</sup></div>
+            <div style="font-size:13px;color:rgba(249,248,248,0.45);font-weight:500;margin-top:8px;letter-spacing:0.04em;text-transform:uppercase;">Homes Purchased</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div style="text-align:center;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(40px,5vw,60px);font-weight:800;letter-spacing:-0.045em;color:#d63031;line-height:1;">14</div>
+            <div style="font-size:13px;color:rgba(249,248,248,0.45);font-weight:500;margin-top:8px;letter-spacing:0.04em;text-transform:uppercase;">Avg Days to Close</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div style="text-align:center;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(40px,5vw,60px);font-weight:800;letter-spacing:-0.045em;color:#d63031;line-height:1;">$0</div>
+            <div style="font-size:13px;color:rgba(249,248,248,0.45);font-weight:500;margin-top:8px;letter-spacing:0.04em;text-transform:uppercase;">Fees &amp; Commissions</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div style="text-align:center;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(40px,5vw,60px);font-weight:800;letter-spacing:-0.045em;color:#d63031;line-height:1;">4.9<sup style="font-size:0.55em;opacity:0.75;vertical-align:super;">★</sup></div>
+            <div style="font-size:13px;color:rgba(249,248,248,0.45);font-weight:500;margin-top:8px;letter-spacing:0.04em;text-transform:uppercase;">Google Rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ CTA ══ -->
+  <section id="contact" style="padding:100px 32px;background:linear-gradient(180deg,#0a0f1a 0%,#101d32 50%,#0a0f1a 100%);text-align:center;overflow:hidden;position:relative;">
+    <div class="noise-overlay"></div>
+    <div class="radial-glow" data-parallax="0.05" style="width:900px;height:550px;background:radial-gradient(ellipse,rgba(20,55,74,0.38) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;"></div>
+    <!-- Decorative bg house outlines -->
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.025;z-index:0;pointer-events:none;" aria-hidden="true">
+      <svg width="640" height="640" viewBox="0 0 640 640" fill="none">
+        <path d="M320 60L580 260L580 600L60 600L60 260L320 60Z"   stroke="#d63031" stroke-width="1"/>
+        <path d="M320 140L500 280L500 520L140 520L140 280L320 140Z" stroke="#d63031" stroke-width="1"/>
+        <path d="M320 220L420 300L420 440L220 440L220 300L320 220Z" stroke="#d63031" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <div style="position:relative;z-index:2;max-width:720px;margin:0 auto;">
+      <div class="section-pill">Get Started Today</div>
+      <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:800;line-height:1.06;letter-spacing:-0.045em;color:#f9f8f8;margin:0 0 24px;">
+        Ready to Sell<br>
+        Your House <em style="font-style:italic;color:#d63031;">Fast?</em>
+      </h2>
+      <p style="font-size:clamp(15px,1.8vw,18px);color:rgba(249,248,248,0.52);line-height:1.74;margin:0 auto 48px;max-width:500px;">
+        Get your no-obligation cash offer today. No agents, no repairs, no fees. Just a fair price and a fast closing on your terms.
+      </p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
+        <a href="#hero" class="btn-primary" style="font-size:16px;padding:16px 36px;">
+          Get My Cash Offer
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="tel:+15550000000" class="btn-outline" style="font-size:16px;padding:15px 32px;">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M14.5 11.5l-3-1.5-1.5 1.5s-2-.5-3.5-2S4.5 7 4.5 7L6 5.5 4.5 2 3 2C2 2 1 2.5 1 4c0 5.5 5 10 9.5 10 1.5 0 2.5-1 2.5-2l-.5-1.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          Call Us Now
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ FOOTER ══ -->
+  <footer style="background:#0a0f1a;border-top:1px solid rgba(255,255,255,0.06);padding:80px 32px 48px;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:48px;margin-bottom:64px;">
+
+        <!-- Brand -->
+        <div style="grid-column:span 1;min-width:180px;">
+          <a href="#" class="logo-mark" style="display:inline-flex;margin-bottom:20px;">
+            <img src="Brand_assets/bingo_logo_transparent.png" alt="Bingo Home Buyers" style="height:110px;width:auto;object-fit:contain;">
+          </a>
+          <p style="font-size:14px;color:rgba(249,248,248,0.4);line-height:1.72;margin:0 0 22px;max-width:220px;">We buy houses for cash — fast, fair, and hassle-free. Any condition, any situation.</p>
+          <div style="display:flex;gap:10px;">
+            <a href="https://facebook.com/bingohomebuyers" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Facebook">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3V2z" stroke="#d63031" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Company -->
+        <div>
+          <h4 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(249,248,248,0.35);margin:0 0 20px;">Company</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;">
+            <li><a href="#about"        class="footer-link">About Us</a></li>
+            <li><a href="#how-it-works" class="footer-link">How It Works</a></li>
+            <li><a href="#reviews"      class="footer-link">Reviews</a></li>
+            <li><a href="#"             class="footer-link">FAQ</a></li>
+          </ul>
+        </div>
+
+        <!-- Situations -->
+        <div>
+          <h4 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(249,248,248,0.35);margin:0 0 20px;">We Buy</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;">
+            <li><a href="#services" class="footer-link">Foreclosures</a></li>
+            <li><a href="#services" class="footer-link">Inherited Homes</a></li>
+            <li><a href="#services" class="footer-link">Fixer Uppers</a></li>
+            <li><a href="#services" class="footer-link">Vacant Properties</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(249,248,248,0.35);margin:0 0 20px;">Contact</h4>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;">
+            <li><a href="mailto:info@bingohomebuyers.com" class="footer-link">info@bingohomebuyers.com</a></li>
+            <li><a href="tel:+15550000000"                class="footer-link">(555) 000-0000</a></li>
+            <li><span style="font-size:14px;color:rgba(249,248,248,0.35);">Serving Ohio Statewide</span></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom bar -->
+      <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+        <p style="font-size:13px;color:rgba(249,248,248,0.28);margin:0;">&copy; 2025 Bingo Home Buyers. All rights reserved.</p>
+        <div style="display:flex;gap:24px;">
+          <a href="#" class="footer-link" style="font-size:13px;">Privacy Policy</a>
+          <a href="#" class="footer-link" style="font-size:13px;">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // ── Navbar scroll effect ──
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ── Mobile menu ──
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobilePanel  = document.getElementById('mobile-menu-panel');
+    let menuOpen = false;
+
+    mobileToggle.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobilePanel.style.display = menuOpen ? 'block' : 'none';
+      mobileToggle.setAttribute('aria-expanded', String(menuOpen));
+    });
+
+    mobilePanel.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuOpen = false;
+        mobilePanel.style.display = 'none';
+        mobileToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // ── Scroll to top on load ──
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+
+    // ── Tubelight navbar indicator ──
+    (function() {
+      const desktopNav = document.querySelector('.desktop-nav');
+      const navLinks = Array.from(desktopNav.querySelectorAll('.nav-link'));
+      const tubelight = document.getElementById('tubelight');
+      const sectionIds = ['how-it-works', 'about', 'services', 'areas', 'reviews'];
+      const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+      let currentIdx = -1;
+
+      function moveTo(idx) {
+        if (idx === currentIdx) return;
+        currentIdx = idx;
+
+        if (idx < 0 || idx >= navLinks.length) {
+          tubelight.classList.remove('visible');
+          navLinks.forEach(l => l.classList.remove('tubelight-active'));
+          return;
+        }
+
+        const link = navLinks[idx];
+        const navRect = desktopNav.getBoundingClientRect();
+        const linkRect = link.getBoundingClientRect();
+
+        tubelight.style.left = (linkRect.left - navRect.left) + 'px';
+        tubelight.style.width = linkRect.width + 'px';
+        tubelight.classList.add('visible');
+
+        navLinks.forEach(l => l.classList.remove('tubelight-active'));
+        link.classList.add('tubelight-active');
+      }
+
+      function detectSection() {
+        if (window.scrollY <= 60) { moveTo(-1); return; }
+
+        const viewportThird = window.innerHeight * 0.35;
+        let activeIdx = -1;
+
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const rect = sections[i].getBoundingClientRect();
+          if (rect.top <= viewportThird) {
+            activeIdx = i;
+            break;
+          }
+        }
+        moveTo(activeIdx);
+      }
+
+      window.addEventListener('scroll', detectSection, { passive: true });
+      window.addEventListener('resize', () => { currentIdx = -2; detectSection(); }, { passive: true });
+
+      navLinks.forEach((link, i) => {
+        link.addEventListener('click', () => moveTo(i));
+      });
+
+      detectSection();
+    })();
+
+    // ── Scroll reveal + staggered cards ──
+    (function() {
+      // Section headers — alternate left/right slide direction
+      const pills = document.querySelectorAll('.section-pill');
+      pills.forEach((pill, i) => {
+        const parent = pill.parentElement;
+        parent.classList.add(i % 2 === 0 ? 'reveal-left' : 'reveal-right');
+      });
+
+      // Cards — 3D tilt reveal with stagger
+      const cardGrids = [
+        '#how-it-works > div > div:last-child',  // 3-step cards grid
+        '#services > div > div:last-child',       // situation cards grid
+        '#areas > div > div:last-child',          // area cards grid
+        '#reviews > div > div:nth-child(2)',       // testimonial cards grid
+      ];
+      cardGrids.forEach(sel => {
+        const grid = document.querySelector(sel);
+        if (!grid) return;
+        Array.from(grid.children).forEach((card, i) => {
+          if (card.classList.contains('glow-card') || card.classList.contains('glass-card')) {
+            card.classList.add('reveal-3d', 'reveal-stagger-' + Math.min(i + 1, 4));
+          }
+        });
+      });
+
+      // Stats card — scale up
+      const statsCard = document.querySelector('#reviews .glass-card:last-child');
+      if (statsCard) statsCard.classList.add('reveal-scale');
+
+      // About section text — scale up for dramatic emphasis
+      const aboutText = document.querySelector('#about > div:last-child');
+      if (aboutText) aboutText.classList.add('reveal-scale');
+
+      // CTA section — 3D lift
+      const ctaInner = document.querySelector('#contact > div:last-child');
+      if (ctaInner) ctaInner.classList.add('reveal-lift');
+
+      // Observe
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-3d, .reveal-scale, .reveal-lift').forEach(el => observer.observe(el));
+    })();
+
+    // ── Animated stat counters ──
+    (function() {
+      const statEls = document.querySelectorAll('.stats-row > div:not(.stat-divider) > div:first-child');
+      if (!statEls.length) return;
+
+      const targets = [];
+      statEls.forEach(el => {
+        const text = el.textContent.trim();
+        // Parse: "500+", "14", "$0", "4.9★"
+        const prefix = text.match(/^[^0-9]*/)[0];           // "$" or ""
+        const numMatch = text.match(/[\d.]+/);
+        const num = numMatch ? parseFloat(numMatch[0]) : 0;
+        const suffix = text.replace(/^[^0-9]*[\d.]+/, '');   // "+", "★", etc
+        const isDecimal = text.includes('.');
+        const originalHTML = el.innerHTML;
+
+        targets.push({ el, prefix, num, suffix, isDecimal, originalHTML, counted: false });
+      });
+
+      function animateCount(t, duration) {
+        if (t.counted) return;
+        t.counted = true;
+        const start = performance.now();
+        const supMatch = t.originalHTML.match(/<sup[^>]*>.*?<\/sup>/);
+        const supHTML = supMatch ? supMatch[0] : '';
+
+        function tick(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = eased * t.num;
+
+          let display;
+          if (t.isDecimal) {
+            display = current.toFixed(1);
+          } else {
+            display = Math.round(current).toLocaleString();
+          }
+
+          // Rebuild with prefix + number + sup suffix
+          t.el.innerHTML = t.prefix + display + (supHTML || t.suffix);
+
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            targets.forEach(t => animateCount(t, 1800));
+            statsObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      const statsRow = document.querySelector('.stats-row');
+      if (statsRow) statsObserver.observe(statsRow);
+    })();
+
+    // ── Glowing Card Effect ──
+    (function() {
+      // Target section cards (not the hero form card)
+      const cards = document.querySelectorAll(
+        '#how-it-works .glow-card, #services .glass-card, #areas .glow-card, #reviews .glass-card'
+      );
+
+      cards.forEach(card => {
+        card.classList.add('glow-wrap');
+
+        const overlay = document.createElement('div');
+        overlay.className = 'glow-overlay';
+        overlay.setAttribute('aria-hidden', 'true');
+        const ring = document.createElement('div');
+        ring.className = 'glow-ring';
+        overlay.appendChild(ring);
+
+        const blur = document.createElement('div');
+        blur.className = 'glow-blur';
+        blur.setAttribute('aria-hidden', 'true');
+        const blurRing = document.createElement('div');
+        blurRing.className = 'glow-ring';
+        blur.appendChild(blurRing);
+
+        card.appendChild(overlay);
+        card.appendChild(blur);
+      });
+
+      const wraps = document.querySelectorAll('.glow-wrap');
+      if (!wraps.length) return;
+
+      const PROXIMITY = 120;
+      let lastX = -9999, lastY = -9999;
+      let raf = 0;
+
+      function update(mx, my) {
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          wraps.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            const cx = rect.left + rect.width * 0.5;
+            const cy = rect.top + rect.height * 0.5;
+
+            const isNear = mx > rect.left - PROXIMITY && mx < rect.right + PROXIMITY &&
+                           my > rect.top - PROXIMITY && my < rect.bottom + PROXIMITY;
+
+            el.style.setProperty('--glow-active', isNear ? '1' : '0');
+            if (!isNear) return;
+
+            const angle = (180 * Math.atan2(my - cy, mx - cx)) / Math.PI + 90;
+            el.style.setProperty('--glow-start', String(angle));
+          });
+        });
+      }
+
+      document.body.addEventListener('pointermove', e => {
+        lastX = e.clientX; lastY = e.clientY;
+        update(lastX, lastY);
+      }, { passive: true });
+
+      window.addEventListener('scroll', () => update(lastX, lastY), { passive: true });
+    })();
+
+    // ── Parallax background glows ──
+    (function() {
+      const glows = document.querySelectorAll('.radial-glow[data-parallax]');
+      if (!glows.length) return;
+
+      // Store each glow's original transform so we can layer parallax on top
+      const glowData = [];
+      glows.forEach(el => {
+        const style = el.getAttribute('style') || '';
+        // Extract the original translate values from inline style
+        const match = style.match(/transform:\s*translate\(([^)]+)\)/);
+        const original = match ? match[1] : '0,0';
+        const speed = parseFloat(el.dataset.parallax) || 0.05;
+        glowData.push({ el, original, speed });
+      });
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          glowData.forEach(({ el, original, speed }) => {
+            const shift = scrollY * speed;
+            el.style.transform = `translate(${original}) translateY(${-shift}px)`;
+          });
+          ticking = false;
+        });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll(); // initial position
+    })();
+  </script>
+</body>
+</html>
