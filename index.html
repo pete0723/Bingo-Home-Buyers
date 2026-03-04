@@ -762,8 +762,7 @@
       .stat-divider { display: none; }
       .stats-row { flex-direction: column; gap: 32px !important; align-items: center; }
       .city-state-zip { grid-template-columns: 1fr !important; }
-      .hero-bullets { gap: 12px !important; }
-      .hero-bullets > div { gap: 12px !important; }
+      .hero-bullets { grid-template-columns: 1fr !important; gap: 12px !important; }
     }
     @media (min-width: 769px) {
       .mobile-toggle { display: none !important; }
@@ -854,26 +853,22 @@
         <p style="font-size:clamp(15px,1.6vw,18px);color:rgba(249,248,248,0.55);line-height:1.72;max-width:460px;margin:0 0 36px;font-weight:400;">
           No repairs, no agents, no hassle. We buy houses across Ohio for cash — get a fair offer in as little as 24 hours and close on your timeline.
         </p>
-        <div class="hero-bullets" style="display:flex;flex-direction:column;gap:14px;">
-          <div style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">No Fees or Commissions</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">Close in as Few as 7 Days</span>
-            </div>
+        <div class="hero-bullets" style="display:grid;grid-template-columns:1fr 1fr;gap:14px 32px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">No Fees or Commissions</span>
           </div>
-          <div style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">Any Condition, Any Situation</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">Cash in Your Hands at Close</span>
-            </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">Close in as Few as 7 Days</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">Any Condition, Any Situation</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#d63031" stroke-width="1.8" stroke-linecap="round"/><path d="M22 4L12 14.01l-3-3" stroke="#d63031" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-size:14px;color:rgba(249,248,248,0.6);font-weight:500;">Cash in Your Hands at Close</span>
           </div>
         </div>
       </div>
