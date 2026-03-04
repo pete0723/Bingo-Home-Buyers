@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bingo Home Buyers</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -813,14 +815,14 @@
         <form id="lead-form" onsubmit="return false;" style="display:flex;flex-direction:column;gap:14px;">
           <!-- Name row -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <input type="text" class="form-input" placeholder="First Name" required aria-label="First Name">
-            <input type="text" class="form-input" placeholder="Last Name" required aria-label="Last Name">
+            <input type="text" class="form-input" placeholder="First Name *" required aria-label="First Name">
+            <input type="text" class="form-input" placeholder="Last Name *" required aria-label="Last Name">
           </div>
           <!-- Address -->
-          <input type="text" class="form-input" placeholder="Property Address" required aria-label="Property Address">
+          <input type="text" class="form-input" placeholder="Property Address *" required aria-label="Property Address">
           <!-- City / State / Zip -->
           <div style="display:grid;grid-template-columns:1fr 100px 110px;gap:12px;">
-            <input type="text" class="form-input" placeholder="City" required aria-label="City">
+            <input type="text" class="form-input" placeholder="City *" required aria-label="City">
             <select class="form-input" required aria-label="State">
               <option value="" disabled selected>State</option>
               <option value="AL">AL</option><option value="AK">AK</option><option value="AZ">AZ</option><option value="AR">AR</option>
@@ -837,13 +839,13 @@
               <option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WV">WV</option>
               <option value="WI">WI</option><option value="WY">WY</option>
             </select>
-            <input type="text" class="form-input" placeholder="Zip Code" required aria-label="Zip Code" maxlength="10" inputmode="numeric">
+            <input type="text" class="form-input" placeholder="Zip Code *" required aria-label="Zip Code" maxlength="10" inputmode="numeric">
           </div>
           <!-- Phone -->
-          <input type="tel" class="form-input" placeholder="Phone Number" required aria-label="Phone Number">
+          <input type="tel" class="form-input" placeholder="Phone Number *" required aria-label="Phone Number">
           <!-- Condition dropdown -->
           <select class="form-input" required aria-label="Condition of Home">
-            <option value="" disabled selected>Condition of Home</option>
+            <option value="" disabled selected>Condition of Home *</option>
             <option value="excellent">Excellent — Move-in ready</option>
             <option value="good">Good — Minor cosmetic updates</option>
             <option value="fair">Fair — Needs some repairs</option>
@@ -856,15 +858,11 @@
           <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
             <label class="consent-check">
               <input type="checkbox" required>
-              <span>I agree to the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a>.</span>
+              <span>I agree to the <a href="terms-of-service.pdf" target="_blank">Terms of Service</a> and <a href="privacy-policy.pdf" target="_blank">Privacy Policy</a>. *</span>
             </label>
             <label class="consent-check">
               <input type="checkbox" required>
-              <span>I consent to receive transactional texts, calls, and emails from Bingo Home Buyers about my inquiry (property details, responses, appointments). Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply.</span>
-            </label>
-            <label class="consent-check">
-              <input type="checkbox" required>
-              <span>I consent to receive marketing texts, calls, and emails from Bingo Home Buyers, including property offers and promotions. Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply.</span>
+              <span>I consent to receive marketing and transactional calls, texts, and emails from Bingo Home Buyers regarding my inquiry, cash offers, appointments, and promotional communications. Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply. Consent is not a condition of purchase. *</span>
             </label>
             <p style="font-size:10.5px;color:rgba(249,248,248,0.28);line-height:1.5;margin:0;">Your information is secure and will not be sold or shared with third parties.</p>
           </div>
