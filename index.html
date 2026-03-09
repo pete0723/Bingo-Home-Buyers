@@ -897,18 +897,18 @@
         <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#f9f8f8;margin:0 0 6px;text-align:center;">Get Your Free Cash Offer</h2>
         <p style="font-size:13px;color:rgba(249,248,248,0.45);text-align:center;margin:0 0 24px;">Fill out the form below and we'll reach out within 24 hours.</p>
 
-        <form id="lead-form" onsubmit="return false;" style="display:flex;flex-direction:column;gap:14px;">
+        <form id="lead-form" style="display:flex;flex-direction:column;gap:14px;">
           <!-- Name row -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <input type="text" class="form-input" placeholder="First Name *" required aria-label="First Name">
-            <input type="text" class="form-input" placeholder="Last Name *" required aria-label="Last Name">
+            <input type="text" name="firstName" class="form-input" placeholder="First Name *" required aria-label="First Name">
+            <input type="text" name="lastName" class="form-input" placeholder="Last Name *" required aria-label="Last Name">
           </div>
           <!-- Address -->
-          <input type="text" class="form-input" placeholder="Property Address *" required aria-label="Property Address">
+          <input type="text" name="address" class="form-input" placeholder="Property Address *" required aria-label="Property Address">
           <!-- City / State / Zip -->
           <div class="city-state-zip" style="display:grid;grid-template-columns:1fr 100px 110px;gap:12px;">
-            <input type="text" class="form-input" placeholder="City *" required aria-label="City">
-            <select class="form-input" required aria-label="State">
+            <input type="text" name="city" class="form-input" placeholder="City *" required aria-label="City">
+            <select name="state" class="form-input" required aria-label="State">
               <option value="" disabled selected>State</option>
               <option value="AL">AL</option><option value="AK">AK</option><option value="AZ">AZ</option><option value="AR">AR</option>
               <option value="CA">CA</option><option value="CO">CO</option><option value="CT">CT</option><option value="DE">DE</option>
@@ -924,12 +924,12 @@
               <option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WV">WV</option>
               <option value="WI">WI</option><option value="WY">WY</option>
             </select>
-            <input type="text" class="form-input" placeholder="Zip Code *" required aria-label="Zip Code" maxlength="10" inputmode="numeric">
+            <input type="text" name="zip" class="form-input" placeholder="Zip Code *" required aria-label="Zip Code" maxlength="10" inputmode="numeric">
           </div>
           <!-- Phone -->
-          <input type="tel" class="form-input" placeholder="Phone Number *" required aria-label="Phone Number">
+          <input type="tel" name="phone" class="form-input" placeholder="Phone Number *" required aria-label="Phone Number">
           <!-- Condition dropdown -->
-          <select class="form-input" required aria-label="Condition of Home">
+          <select name="condition" class="form-input" required aria-label="Condition of Home">
             <option value="" disabled selected>Condition of Home *</option>
             <option value="excellent">Excellent — Move-in ready</option>
             <option value="good">Good — Minor cosmetic updates</option>
@@ -1523,6 +1523,56 @@
       }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
       document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-3d, .reveal-scale, .reveal-lift').forEach(el => observer.observe(el));
+    })();
+
+    // ── Lead form → GHL webhook ──
+    (function() {
+      const form = document.getElementById('lead-form');
+      if (!form) return;
+      const btn = form.querySelector('button[type="submit"]');
+      const btnHTML = btn.innerHTML;
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        // Disable button
+        btn.disabled = true;
+        btn.innerHTML = 'Sending...';
+        btn.style.opacity = '0.6';
+
+        const data = {
+          firstName: form.firstName.value.trim(),
+          lastName: form.lastName.value.trim(),
+          name: form.firstName.value.trim() + ' ' + form.lastName.value.trim(),
+          address1: form.address.value.trim(),
+          city: form.city.value.trim(),
+          state: form.state.value,
+          postalCode: form.zip.value.trim(),
+          phone: form.phone.value.trim(),
+          propertyCondition: form.condition.value,
+          source: 'Bingo Home Buyers Website'
+        };
+
+        try {
+          await fetch('https://services.leadconnectorhq.com/hooks/WIYKN2NLdrznV0waTC5s/webhook-trigger/74b7273f-f594-4f84-bc73-ac2f55944859', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            mode: 'no-cors'
+          });
+
+          // Fire Meta Pixel Lead event
+          if (typeof fbq === 'function') fbq('track', 'Lead');
+
+          // Success state
+          form.innerHTML = '<div style="text-align:center;padding:40px 20px;"><div style="font-size:48px;margin-bottom:16px;">&#10003;</div><h3 style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:22px;font-weight:700;color:#f9f8f8;margin:0 0 10px;">We Got Your Info!</h3><p style="font-size:14px;color:rgba(249,248,248,0.55);line-height:1.6;margin:0;">We\'ll reach out within 24 hours with your free cash offer.</p></div>';
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerHTML = btnHTML;
+          btn.style.opacity = '1';
+          alert('Something went wrong. Please try again or call us directly.');
+        }
+      });
     })();
 
     // ── Animated stat counters ──
