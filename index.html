@@ -1548,7 +1548,7 @@
           city: form.city.value.trim(),
           state: form.state.value,
           postalCode: form.zip.value.trim(),
-          phone: form.phone.value.trim(),
+          phone: '+1' + form.phone.value.trim().replace(/\D/g, ''),
           propertyCondition: form.condition.value,
           source: 'Bingo Home Buyers Website'
         };
