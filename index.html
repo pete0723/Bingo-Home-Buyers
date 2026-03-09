@@ -1554,10 +1554,11 @@
         };
 
         try {
+          const params = new URLSearchParams(data);
           await fetch('https://services.leadconnectorhq.com/hooks/WIYKN2NLdrznV0waTC5s/webhook-trigger/74b7273f-f594-4f84-bc73-ac2f55944859', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params.toString(),
             mode: 'no-cors'
           });
 
