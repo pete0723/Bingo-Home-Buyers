@@ -2,3 +2,5 @@
 temporary screenshots/
 www.iertqa.com_.png
 .claude/
+.env.local
+dist/

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!-- Standalone confirmation page. NOT linked in nav. Loaded after a lead-form submit. -->
+<!-- IMPORTANT: This is the ONLY page that carries Meta Pixel 1397499955522386. -->
+<!-- Do not move this pixel into a shared include — it must fire only on /thank-you. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You — Bingo Home Buyers</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1397499955522386');
+  fbq('track', 'PageView');
+  fbq('track', 'Lead');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1397499955522386&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Favicons (shared with the main site) -->
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <!-- Fonts: refined serif headline + clean sans body (sans shared with main site) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --brand-red:  #C8272D;
+      --brand-navy: #1D3D4A;
+      --ink:        #1D3D4A;
+      --slate:      #4D5C64;
+      --slate-soft: #5A6970;
+      --paper:      #F4F2EC;
+      --card:       #FFFFFF;
+    }
+
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--slate);
+      background-color: var(--paper);
+      /* layered light to read as fine, calm "paper", not a flat fill */
+      background-image:
+        radial-gradient(1100px 560px at 50% -8%,  rgba(255,255,255,0.95), rgba(255,255,255,0) 62%),
+        radial-gradient(820px 520px at 50% 116%,   rgba(29,61,74,0.06),    rgba(29,61,74,0) 60%);
+      position: relative;
+    }
+
+    /* very faint grain for depth — kept near-invisible (this page is "not flashy") */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.6;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+    }
+
+    .stage {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .card {
+      position: relative;
+      background: var(--card);
+      border: 1px solid rgba(29,61,74,0.08);
+      border-radius: 18px;
+      padding: 54px 48px 40px;
+      text-align: center;
+      overflow: hidden;
+      /* layered, navy-tinted shadow — base / elevated / floating */
+      box-shadow:
+        0 1px 2px   rgba(29,61,74,0.05),
+        0 12px 26px -12px rgba(29,61,74,0.14),
+        0 44px 80px -36px rgba(29,61,74,0.20);
+      animation: rise 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    /* letterhead accent bar — both brand colors, restrained */
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--brand-red) 0%, var(--brand-red) 52%, var(--brand-navy) 100%);
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      display: block;
+      height: 56px;
+      width: auto;
+      margin: 6px auto 26px;
+    }
+
+    .seal {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 26px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1.5px solid rgba(29,61,74,0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        inset 0 0 0 4px rgba(200,39,45,0.045),
+        0 10px 20px -10px rgba(29,61,74,0.28);
+      animation: pop 620ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+    }
+    @keyframes pop {
+      from { opacity: 0; transform: scale(0.82); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    h1 {
+      font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+      font-weight: 600;
+      font-size: clamp(27px, 4.7vw, 38px);
+      line-height: 1.16;
+      letter-spacing: -0.018em;
+      color: var(--ink);
+      margin: 0 0 16px;
+    }
+
+    .lede {
+      font-size: clamp(15px, 2.4vw, 16.5px);
+      line-height: 1.72;
+      color: var(--slate);
+      max-width: 47ch;
+      margin: 0 auto 26px;
+    }
+    .lede strong { color: var(--ink); font-weight: 600; }
+
+    .rule {
+      width: 64px;
+      height: 1px;
+      margin: 0 auto 24px;
+      background: linear-gradient(90deg, transparent, rgba(29,61,74,0.28), transparent);
+    }
+
+    .reassure {
+      font-size: 14px;
+      line-height: 1.62;
+      color: var(--slate-soft);
+      font-weight: 500;
+      max-width: 44ch;
+      margin: 0 auto 26px;
+      padding: 15px 22px;
+      background: rgba(29,61,74,0.035);
+      border: 1px solid rgba(29,61,74,0.07);
+      border-radius: 12px;
+    }
+
+    .contact {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--slate-soft);
+      margin: 0;
+    }
+    .contact a {
+      color: var(--ink);
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(29,61,74,0.25);
+      padding-bottom: 1px;
+      transition: color 160ms ease, border-color 160ms ease;
+    }
+    .contact a:hover        { color: var(--brand-red); border-color: rgba(200,39,45,0.45); }
+    .contact a:focus-visible{ outline: 2px solid var(--brand-red); outline-offset: 3px; border-radius: 3px; }
+    .contact a:active       { color: var(--brand-red); opacity: 0.85; }
+
+    .footnote {
+      margin-top: 22px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(29,61,74,0.5);
+      line-height: 1.7;
+    }
+    .footnote .home {
+      color: rgba(29,61,74,0.6);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 160ms ease;
+    }
+    .footnote .home:hover        { color: var(--brand-red); text-decoration: underline; text-underline-offset: 2px; }
+    .footnote .home:focus-visible{ outline: 2px solid var(--brand-red); outline-offset: 2px; border-radius: 3px; }
+    .footnote .home:active       { opacity: 0.8; }
+
+    @media (max-width: 480px) {
+      .card { padding: 40px 26px 32px; border-radius: 16px; }
+      .logo { height: 48px; margin-bottom: 22px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card, .seal { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="card">
+      <img class="logo" src="Brand_assets/bingo_home_buyers_logo_top_left_transparent_clean.png" alt="Bingo Home Buyers">
+
+      <div class="seal" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <path d="M5 12.5l4.2 4.2L19 7" stroke="#C8272D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <h1>Thanks &mdash; we&rsquo;ve got your information.</h1>
+
+      <p class="lede">Your request is in. A member of the Bingo Home Buyers team will personally reach out <strong>shortly</strong> to talk through your property and walk you through a no-obligation cash offer.</p>
+
+      <div class="rule" aria-hidden="true"></div>
+
+      <p class="reassure">No pressure, no fees, no obligation. Just a straightforward conversation about your options.</p>
+
+      <p class="contact">Need to reach us sooner? Call or text <a href="tel:+13124776542">312-477-6542</a>.</p>
+    </section>
+
+    <p class="footnote">
+      Bingo Home Buyers &middot; We buy houses for cash, in any condition.<br>
+      <a class="home" href="/">Return to homepage</a>
+    </p>
+  </main>
+</body>
+</html>

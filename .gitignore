@@ -14,3 +14,13 @@ Thumbs.db
 # Reference images
 www.iertqa.com_.png
 .vercel
+
+# Secrets / local env — NEVER commit the Google Maps key
+.env.local
+.env
+
+# Build output
+dist/
+
+# Dependencies
+node_modules/
