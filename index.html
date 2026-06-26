@@ -1716,20 +1716,18 @@
         }
       }
 
-      // Bias across the ENTIRE US so suggestions rank by text relevance, not by
-      // proximity to the visitor's IP. Google applies IP-based biasing by default
-      // when no locationBias is set — that was anchoring results to wherever the
-      // seller is typing from (e.g. Columbus). A country-wide bias box neutralizes
-      // that local-distance bias; includedRegionCodes:['us'] still hard-restricts
-      // results to US addresses (CONUS + AK + HI), so out-of-state owners are fine.
-      const US_BOUNDS = { west: -171.0, south: 18.0, east: -66.0, north: 72.0 };
-
       async function onAddrInput() {
         placeSelected = false;
         const val = addrInput.value.trim();
         if (val.length < 3) { closeSuggestions(); return; }
         if (!(await ensurePlaces())) { closeSuggestions(); return; } // plain-text fallback
-        const base = { input: val, includedRegionCodes: ['us'], locationBias: US_BOUNDS, sessionToken };
+        // Intentionally NO locationBias: this lets Google apply its default
+        // IP-based biasing, so suggestions are ranked toward the visitor's
+        // approximate location (nearby addresses first) — the preferred behavior.
+        // includedRegionCodes:['us'] still keeps results US-only. (An out-of-state
+        // owner can still find a distant property by typing the full address; it
+        // just ranks lower than nearby ones.)
+        const base = { input: val, includedRegionCodes: ['us'], sessionToken };
         try {
           let res;
           try {
