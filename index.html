@@ -997,7 +997,7 @@
               </label>
               <label class="consent-check">
                 <input type="checkbox" name="smsConsent">
-                <span>I consent to receive transactional SMS/text messages from Bingo Home Buyers regarding my inquiry, cash offers, and appointment updates. Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply.</span>
+                <span>I consent to receive transactional SMS/text messages from Bingo Home Buyers regarding my inquiry, cash offers, and appointment updates. Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply. You must be 18+ to use this SMS service.</span>
               </label>
               <label class="consent-check">
                 <input type="checkbox" name="smsPromoConsent">
@@ -1014,6 +1014,12 @@
             <button type="button" id="step2-back" class="step-back">&larr; Back to address</button>
           </div>
         </form>
+
+        <!-- Always-visible SMS disclosure: static HTML so A2P compliance crawlers read it on
+             initial load (NOT hidden, NOT gated behind step 2, NOT injected by JS). -->
+        <p style="margin:18px 0 0;font-size:11px;line-height:1.6;color:rgba(249,248,248,0.42);text-align:center;">
+          <strong style="color:rgba(249,248,248,0.62);">SMS Disclosure:</strong> By submitting your information to Bingo Home Buyers LLC, you may opt in to receive transactional and promotional text messages about your property inquiry and cash offer. Message frequency may vary. Message &amp; data rates may apply. Reply STOP to unsubscribe, HELP for help. You must be 18 years of age or older to use this SMS service. SMS consent is not required to submit this form or as a condition of any purchase. See our <a href="/privacy-policy" target="_blank" rel="noopener" style="color:#C8272D;">Privacy Policy</a> and <a href="/terms-of-service" target="_blank" rel="noopener" style="color:#C8272D;">Terms of Service</a>.
+        </p>
       </div>
 
     </div>
