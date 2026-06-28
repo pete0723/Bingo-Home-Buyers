@@ -16,6 +16,8 @@ const KEY = (process.env.GOOGLE_MAPS_API_KEY || '').trim();
 const ASSETS = [
   'index.html',
   'thank-you.html',
+  'privacy-policy.html',
+  'terms-of-service.html',
   'favicon.ico',
   'favicon.png',
   'icon-192.png',
