@@ -996,11 +996,11 @@
                 <span>I agree to the <a href="terms-of-service.pdf" target="_blank">Terms of Service</a> and <a href="privacy-policy.pdf" target="_blank">Privacy Policy</a>. *</span>
               </label>
               <label class="consent-check">
-                <input type="checkbox" required>
-                <span>I consent to receive transactional SMS/text messages from Bingo Home Buyers regarding my inquiry, cash offers, and appointment updates. Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply. *</span>
+                <input type="checkbox" name="smsConsent">
+                <span>I consent to receive transactional SMS/text messages from Bingo Home Buyers regarding my inquiry, cash offers, and appointment updates. Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply.</span>
               </label>
               <label class="consent-check">
-                <input type="checkbox">
+                <input type="checkbox" name="smsPromoConsent">
                 <span>I also consent to receive promotional SMS/text messages from Bingo Home Buyers, including special offers and market updates. Msg frequency varies. Reply STOP to opt out, HELP for help. Msg &amp; data rates may apply. Consent is not a condition of purchase.</span>
               </label>
               <p style="font-size:10.5px;color:rgba(249,248,248,0.28);line-height:1.5;margin:0;">Your information is secure and will not be sold or shared with third parties.</p>
@@ -1813,6 +1813,10 @@
           phone:     '+1' + form.phone.value.trim().replace(/\D/g, ''),
           email:     form.email.value.trim(),
           timeline:  form.timeline.value,
+          // SMS consent is OPTIONAL (A2P 10DLC: consent checkboxes cannot be required).
+          // Capture the state either way so the lead carries a clear yes/no flag.
+          smsConsent:      (form.smsConsent && form.smsConsent.checked) ? 'Yes' : 'No',
+          smsPromoConsent: (form.smsPromoConsent && form.smsPromoConsent.checked) ? 'Yes' : 'No',
           source:    'Bingo Home Buyers Website'
         };
 
