@@ -982,6 +982,12 @@
             <input type="hidden" name="state">
             <input type="hidden" name="zip">
             <input type="hidden" name="formattedAddress">
+            <!-- URL tracking params (UTMs + Meta click ID) for ad attribution — captured on page load -->
+            <input type="hidden" name="utm_source">
+            <input type="hidden" name="utm_medium">
+            <input type="hidden" name="utm_campaign">
+            <input type="hidden" name="utm_content">
+            <input type="hidden" name="fbclid">
             <button type="button" id="step1-next" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px 28px;">
               Get My Cash Offer
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1629,6 +1635,19 @@
         zip:       form.querySelector('input[name="zip"]'),
         formatted: form.querySelector('input[name="formattedAddress"]'),
       };
+
+      // URL tracking params (UTMs + Meta click ID) for ad attribution. Read once on page
+      // load; absent params default to '' so all five keys always send (like smsConsent).
+      const tracking = {
+        utm_source:   form.querySelector('input[name="utm_source"]'),
+        utm_medium:   form.querySelector('input[name="utm_medium"]'),
+        utm_campaign: form.querySelector('input[name="utm_campaign"]'),
+        utm_content:  form.querySelector('input[name="utm_content"]'),
+        fbclid:       form.querySelector('input[name="fbclid"]'),
+      };
+      const trackParams = new URLSearchParams(window.location.search);
+      Object.keys(tracking).forEach(function(k) { if (tracking[k]) tracking[k].value = trackParams.get(k) || ''; });
+
       let placeSelected = false;
 
       // ---- Google Places (New), loaded lazily; degrades to plain text if unavailable ----
@@ -1842,7 +1861,12 @@
           // Capture the state either way so the lead carries a clear yes/no flag.
           smsConsent:      (form.smsConsent && form.smsConsent.checked) ? 'Yes' : 'No',
           smsPromoConsent: (form.smsPromoConsent && form.smsPromoConsent.checked) ? 'Yes' : 'No',
-          source:    'Bingo Home Buyers Website'
+          source:    'Bingo Home Buyers Website',
+          utm_source:   tracking.utm_source.value,
+          utm_medium:   tracking.utm_medium.value,
+          utm_campaign: tracking.utm_campaign.value,
+          utm_content:  tracking.utm_content.value,
+          fbclid:       tracking.fbclid.value
         };
 
         try {
