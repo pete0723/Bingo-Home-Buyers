@@ -988,6 +988,27 @@
             <input type="hidden" name="utm_campaign">
             <input type="hidden" name="utm_content">
             <input type="hidden" name="fbclid">
+
+            <!-- Consent — moved to Step 1 so the consent mechanism is visible on initial page load (A2P) -->
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+              <label class="consent-check">
+                <input type="checkbox" required>
+                <span>I agree to the <a href="/terms-of-service" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>. *</span>
+              </label>
+              <label class="consent-check">
+                <input type="checkbox" name="smsConsent">
+                <span>I consent to receive non-marketing text messages from Bingo Home Buyers LLC about my property inquiry, cash offers, and appointment updates. Message frequency may vary, message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+              </label>
+              <label class="consent-check">
+                <input type="checkbox" name="smsPromoConsent">
+                <span>I consent to receive marketing text messages, about special offers, discounts, and service updates, from Bingo Home Buyers LLC at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+              </label>
+              <p style="font-size:10.5px;color:rgba(249,248,248,0.28);line-height:1.5;margin:0;">Your information is secure and will not be sold or shared with third parties.</p>
+            </div>
+            <!-- Always-visible SMS disclosure (moved to Step 1): static HTML, visible on load with the checkboxes -->
+            <p style="margin:18px 0 0;font-size:11px;line-height:1.6;color:rgba(249,248,248,0.42);text-align:center;">
+              <strong style="color:rgba(249,248,248,0.62);">SMS Disclosure:</strong> By submitting your information to Bingo Home Buyers LLC, you may opt in to receive transactional and promotional text messages about your property inquiry and cash offer. Message frequency may vary. Message &amp; data rates may apply. Reply STOP to unsubscribe, HELP for help. You must be 18 years of age or older to use this SMS service. SMS consent is not required to submit this form or as a condition of any purchase. See our <a href="/privacy-policy" target="_blank" rel="noopener" style="color:#C8272D;">Privacy Policy</a> and <a href="/terms-of-service" target="_blank" rel="noopener" style="color:#C8272D;">Terms of Service</a>.
+            </p>
             <button type="button" id="step1-next" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px 28px;">
               Get My Cash Offer
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1014,23 +1035,6 @@
               <option value="Just exploring">Just exploring</option>
             </select>
 
-            <!-- Consent checkboxes -->
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
-              <label class="consent-check">
-                <input type="checkbox" required>
-                <span>I agree to the <a href="/terms-of-service" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>. *</span>
-              </label>
-              <label class="consent-check">
-                <input type="checkbox" name="smsConsent">
-                <span>I consent to receive non-marketing text messages from Bingo Home Buyers LLC about my property inquiry, cash offers, and appointment updates. Message frequency may vary, message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
-              </label>
-              <label class="consent-check">
-                <input type="checkbox" name="smsPromoConsent">
-                <span>I consent to receive marketing text messages, about special offers, discounts, and service updates, from Bingo Home Buyers LLC at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
-              </label>
-              <p style="font-size:10.5px;color:rgba(249,248,248,0.28);line-height:1.5;margin:0;">Your information is secure and will not be sold or shared with third parties.</p>
-            </div>
-
             <!-- Submit -->
             <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px 28px;margin-top:4px;">
               Get My Cash Offer
@@ -1039,12 +1043,6 @@
             <button type="button" id="step2-back" class="step-back">&larr; Back to address</button>
           </div>
         </form>
-
-        <!-- Always-visible SMS disclosure: static HTML so A2P compliance crawlers read it on
-             initial load (NOT hidden, NOT gated behind step 2, NOT injected by JS). -->
-        <p style="margin:18px 0 0;font-size:11px;line-height:1.6;color:rgba(249,248,248,0.42);text-align:center;">
-          <strong style="color:rgba(249,248,248,0.62);">SMS Disclosure:</strong> By submitting your information to Bingo Home Buyers LLC, you may opt in to receive transactional and promotional text messages about your property inquiry and cash offer. Message frequency may vary. Message &amp; data rates may apply. Reply STOP to unsubscribe, HELP for help. You must be 18 years of age or older to use this SMS service. SMS consent is not required to submit this form or as a condition of any purchase. See our <a href="/privacy-policy" target="_blank" rel="noopener" style="color:#C8272D;">Privacy Policy</a> and <a href="/terms-of-service" target="_blank" rel="noopener" style="color:#C8272D;">Terms of Service</a>.
-        </p>
       </div>
 
     </div>
@@ -1815,6 +1813,16 @@
           hint.textContent = 'Please enter your property address to continue.';
           hint.classList.add('error'); hint.hidden = false;
           addrInput.focus();
+          return;
+        }
+        // Terms/Privacy agreement is required. It now lives on Step 1, and a required field
+        // inside a display:none step is skipped by native submit validation — so enforce it
+        // here before advancing (guarantees it's satisfied before final submit on Step 2).
+        const termsCheck = form.querySelector('.consent-check input[required]');
+        if (termsCheck && !termsCheck.checked) {
+          hint.textContent = 'Please agree to the Terms of Service and Privacy Policy to continue.';
+          hint.classList.add('error'); hint.hidden = false;
+          termsCheck.focus();
           return;
         }
         // No structured pick (e.g. rural address Google didn't suggest): keep the typed text
