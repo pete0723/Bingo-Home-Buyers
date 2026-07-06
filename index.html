@@ -967,81 +967,68 @@
         <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#f9f8f8;margin:0 0 6px;text-align:center;">Get Your Free Cash Offer</h2>
         <p style="font-size:13px;color:rgba(249,248,248,0.45);text-align:center;margin:0 0 22px;">Enter your address for a free, no-obligation cash offer. We'll reach out shortly.</p>
 
-        <form id="lead-form">
-          <!-- ══ STEP 1 — address first (minimal friction) ══ -->
-          <div class="form-step" data-step="1">
-            <div class="address-field">
-              <input id="address-input" type="text" class="form-input" autocomplete="off" spellcheck="false"
-                     placeholder="Enter your property address" aria-label="Property address"
-                     role="combobox" aria-autocomplete="list" aria-controls="address-suggestions" aria-expanded="false">
-              <ul id="address-suggestions" class="address-suggestions" role="listbox" aria-label="Address suggestions" hidden></ul>
-            </div>
-            <!-- Structured address — populated when a suggestion is chosen; falls back to typed text -->
-            <input type="hidden" name="address">
-            <input type="hidden" name="city">
-            <input type="hidden" name="state">
-            <input type="hidden" name="zip">
-            <input type="hidden" name="formattedAddress">
-            <!-- URL tracking params (UTMs + Meta click ID) for ad attribution — captured on page load -->
-            <input type="hidden" name="utm_source">
-            <input type="hidden" name="utm_medium">
-            <input type="hidden" name="utm_campaign">
-            <input type="hidden" name="utm_content">
-            <input type="hidden" name="fbclid">
-
-            <!-- Consent — moved to Step 1 so the consent mechanism is visible on initial page load (A2P) -->
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
-              <label class="consent-check">
-                <input type="checkbox" required>
-                <span>I agree to the <a href="/terms-of-service" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>. *</span>
-              </label>
-              <label class="consent-check">
-                <input type="checkbox" name="smsConsent">
-                <span>I consent to receive non-marketing text messages from Bingo Home Buyers LLC about my property inquiry, cash offers, and appointment updates. Message frequency may vary, message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
-              </label>
-              <label class="consent-check">
-                <input type="checkbox" name="smsPromoConsent">
-                <span>I consent to receive marketing text messages, about special offers, discounts, and service updates, from Bingo Home Buyers LLC at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
-              </label>
-              <p style="font-size:10.5px;color:rgba(249,248,248,0.28);line-height:1.5;margin:0;">Your information is secure and will not be sold or shared with third parties.</p>
-            </div>
-            <!-- Always-visible SMS disclosure (moved to Step 1): static HTML, visible on load with the checkboxes -->
-            <p style="margin:18px 0 0;font-size:11px;line-height:1.6;color:rgba(249,248,248,0.42);text-align:center;">
-              <strong style="color:rgba(249,248,248,0.62);">SMS Disclosure:</strong> By submitting your information to Bingo Home Buyers LLC, you may opt in to receive transactional and promotional text messages about your property inquiry and cash offer. Message frequency may vary. Message &amp; data rates may apply. Reply STOP to unsubscribe, HELP for help. You must be 18 years of age or older to use this SMS service. SMS consent is not required to submit this form or as a condition of any purchase. See our <a href="/privacy-policy" target="_blank" rel="noopener" style="color:#C8272D;">Privacy Policy</a> and <a href="/terms-of-service" target="_blank" rel="noopener" style="color:#C8272D;">Terms of Service</a>.
-            </p>
-            <button type="button" id="step1-next" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px 28px;">
-              Get My Cash Offer
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <p id="address-hint" class="form-hint" hidden></p>
-            <p class="form-hint">Takes 30 seconds &middot; No obligation &middot; No fees</p>
+        <form id="lead-form" style="display:flex;flex-direction:column;gap:16px;">
+          <!-- Single-step lead form: address + contact details in one view (simpler A2P opt-in flow) -->
+          <div class="address-field">
+            <input id="address-input" type="text" class="form-input" autocomplete="off" spellcheck="false"
+                   placeholder="Enter your property address" aria-label="Property address" required
+                   role="combobox" aria-autocomplete="list" aria-controls="address-suggestions" aria-expanded="false">
+            <ul id="address-suggestions" class="address-suggestions" role="listbox" aria-label="Address suggestions" hidden></ul>
           </div>
+          <!-- Structured address — populated when a suggestion is chosen; falls back to typed text -->
+          <input type="hidden" name="address">
+          <input type="hidden" name="city">
+          <input type="hidden" name="state">
+          <input type="hidden" name="zip">
+          <input type="hidden" name="formattedAddress">
+          <!-- URL tracking params (UTMs + Meta click ID) for ad attribution — captured on page load -->
+          <input type="hidden" name="utm_source">
+          <input type="hidden" name="utm_medium">
+          <input type="hidden" name="utm_campaign">
+          <input type="hidden" name="utm_content">
+          <input type="hidden" name="fbclid">
 
-          <!-- ══ STEP 2 — contact details ══ -->
-          <div class="form-step" data-step="2" hidden>
-            <div class="selected-address" id="selected-address-display">
-              <span class="addr"></span>
-              <button type="button" class="edit">Edit</button>
-            </div>
-            <input type="text" name="fullName" class="form-input" placeholder="Full Name *" required autocomplete="name" aria-label="Full Name">
-            <input type="tel" name="phone" class="form-input" placeholder="Phone Number *" required autocomplete="tel" inputmode="tel" aria-label="Phone Number">
-            <input type="email" name="email" class="form-input" placeholder="Email Address *" required autocomplete="email" inputmode="email" aria-label="Email Address">
-            <select name="timeline" class="form-input" required aria-label="How soon are you looking to sell?">
-              <option value="" disabled selected>Select your timeline *</option>
-              <option value="ASAP">ASAP</option>
-              <option value="Within 30 days">Within 30 days</option>
-              <option value="1-3 months">1-3 months</option>
-              <option value="3-6 months">3-6 months</option>
-              <option value="Just exploring">Just exploring</option>
-            </select>
+          <!-- Contact details — phone & email are OPTIONAL (A2P: contact fields not forced) -->
+          <input type="text" name="fullName" class="form-input" placeholder="Full Name *" required autocomplete="name" aria-label="Full Name">
+          <input type="tel" name="phone" class="form-input" placeholder="Phone Number (optional)" autocomplete="tel" inputmode="tel" aria-label="Phone Number">
+          <input type="email" name="email" class="form-input" placeholder="Email Address (optional)" autocomplete="email" inputmode="email" aria-label="Email Address">
+          <select name="timeline" class="form-input" required aria-label="How soon are you looking to sell?">
+            <option value="" disabled selected>Select your timeline *</option>
+            <option value="ASAP">ASAP</option>
+            <option value="Within 30 days">Within 30 days</option>
+            <option value="1-3 months">1-3 months</option>
+            <option value="3-6 months">3-6 months</option>
+            <option value="Just exploring">Just exploring</option>
+          </select>
 
-            <!-- Submit -->
-            <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px 28px;margin-top:4px;">
-              Get My Cash Offer
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <button type="button" id="step2-back" class="step-back">&larr; Back to address</button>
+          <!-- Consent — all checkboxes OPTIONAL (A2P). Visible on initial page load. -->
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+            <label class="consent-check">
+              <input type="checkbox">
+              <span>I agree to the <a href="/terms-of-service" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+            </label>
+            <label class="consent-check">
+              <input type="checkbox" name="smsConsent">
+              <span>I consent to receive non-marketing text messages from Bingo Home Buyers LLC about my property inquiry, cash offers, and appointment updates. Message frequency may vary, message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+            </label>
+            <label class="consent-check">
+              <input type="checkbox" name="smsPromoConsent">
+              <span>I consent to receive marketing text messages, about special offers, discounts, and service updates, from Bingo Home Buyers LLC at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+            </label>
+            <p style="font-size:10.5px;color:rgba(249,248,248,0.28);line-height:1.5;margin:0;">Your information is secure and will not be sold or shared with third parties.</p>
           </div>
+          <!-- Always-visible SMS disclosure: static HTML, visible on load with the checkboxes -->
+          <p style="margin:18px 0 0;font-size:11px;line-height:1.6;color:rgba(249,248,248,0.42);text-align:center;">
+            <strong style="color:rgba(249,248,248,0.62);">SMS Disclosure:</strong> By submitting your information to Bingo Home Buyers LLC, you may opt in to receive transactional and promotional text messages about your property inquiry and cash offer. Message frequency may vary. Message &amp; data rates may apply. Reply STOP to unsubscribe, HELP for help. You must be 18 years of age or older to use this SMS service. SMS consent is not required to submit this form or as a condition of any purchase. See our <a href="/privacy-policy" target="_blank" rel="noopener" style="color:#C8272D;">Privacy Policy</a> and <a href="/terms-of-service" target="_blank" rel="noopener" style="color:#C8272D;">Terms of Service</a>.
+          </p>
+
+          <!-- Submit -->
+          <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px 28px;margin-top:4px;">
+            Get My Cash Offer
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <p id="address-hint" class="form-hint" hidden></p>
+          <p class="form-hint">Takes 30 seconds &middot; No obligation &middot; No fees</p>
         </form>
       </div>
 
@@ -1615,16 +1602,11 @@
       const form = document.getElementById('lead-form');
       if (!form) return;
 
-      const step1   = form.querySelector('[data-step="1"]');
-      const step2   = form.querySelector('[data-step="2"]');
       const addrInput = document.getElementById('address-input');
       const sugList = document.getElementById('address-suggestions');
       const hint    = document.getElementById('address-hint');
-      const nextBtn = document.getElementById('step1-next');
-      const backBtn = document.getElementById('step2-back');
-      const submitBtn = step2.querySelector('button[type="submit"]');
+      const submitBtn = form.querySelector('button[type="submit"]');
       const submitBtnHTML = submitBtn.innerHTML;
-      const addrDisplay = document.getElementById('selected-address-display');
 
       const hidden = {
         address:   form.querySelector('input[name="address"]'),
@@ -1800,50 +1782,16 @@
         if (!sugList.contains(e.target) && e.target !== addrInput) closeSuggestions();
       });
 
-      // ---- Step navigation (smooth, no reload) ----
-      function showStep(showEl, hideEl, focusEl) {
-        hideEl.hidden = true;
-        showEl.hidden = false;
-        showEl.classList.remove('step-enter'); void showEl.offsetWidth; showEl.classList.add('step-enter');
-        if (focusEl) setTimeout(() => { try { focusEl.focus({ preventScroll: true }); } catch (_) {} }, 70);
-      }
-      function goToStep2() {
-        const val = addrInput.value.trim();
-        if (!val) {
-          hint.textContent = 'Please enter your property address to continue.';
-          hint.classList.add('error'); hint.hidden = false;
-          addrInput.focus();
-          return;
-        }
-        // Terms/Privacy agreement is required. It now lives on Step 1, and a required field
-        // inside a display:none step is skipped by native submit validation — so enforce it
-        // here before advancing (guarantees it's satisfied before final submit on Step 2).
-        const termsCheck = form.querySelector('.consent-check input[required]');
-        if (termsCheck && !termsCheck.checked) {
-          hint.textContent = 'Please agree to the Terms of Service and Privacy Policy to continue.';
-          hint.classList.add('error'); hint.hidden = false;
-          termsCheck.focus();
-          return;
-        }
-        // No structured pick (e.g. rural address Google didn't suggest): keep the typed text
-        if (!placeSelected && !hidden.address.value) {
-          hidden.address.value = val;
-          hidden.formatted.value = val;
-        }
-        addrDisplay.querySelector('.addr').textContent = hidden.formatted.value || val;
-        closeSuggestions();
-        showStep(step2, step1, form.querySelector('input[name="fullName"]'));
-      }
-      function goToStep1() { showStep(step1, step2, addrInput); }
-
-      nextBtn.addEventListener('click', goToStep2);
-      backBtn.addEventListener('click', goToStep1);
-      const editLink = addrDisplay.querySelector('.edit');
-      if (editLink) editLink.addEventListener('click', goToStep1);
-
       // ---- Submit → GHL webhook (keepalive fire-and-navigate to /thank-you) ----
       form.addEventListener('submit', function(e) {
         e.preventDefault();
+
+        // No structured pick (e.g. a rural address Google didn't suggest): keep the typed text.
+        const typedAddr = addrInput.value.trim();
+        if (!placeSelected && !hidden.address.value && typedAddr) {
+          hidden.address.value = typedAddr;
+          hidden.formatted.value = typedAddr;
+        }
 
         const fullName = (form.fullName.value || '').trim().replace(/\s+/g, ' ');
         const sp = fullName.indexOf(' ');
@@ -1862,7 +1810,7 @@
           city:      hidden.city.value.trim(),
           state:     hidden.state.value.trim(),
           postalCode: hidden.zip.value.trim(),
-          phone:     '+1' + form.phone.value.trim().replace(/\D/g, ''),
+          phone:     form.phone.value.trim() ? '+1' + form.phone.value.trim().replace(/\D/g, '') : '',
           email:     form.email.value.trim(),
           timeline:  form.timeline.value,
           // SMS consent is OPTIONAL (A2P 10DLC: consent checkboxes cannot be required).
