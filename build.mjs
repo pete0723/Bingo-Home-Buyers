@@ -24,6 +24,7 @@ const ASSETS = [
   'apple-touch-icon.png',
   'privacy-policy.pdf',
   'terms-of-service.pdf',
+  'opt-in.png',
   'Brand_assets',
 ];
 const HTML_FILES = ['index.html', 'thank-you.html'];
