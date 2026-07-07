@@ -5,6 +5,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="facebook-domain-verification" content="dd36jzk1ukzn08p29uya4k2o4hkxer" />
+
+  <!-- Meta Pixel Code — base/init + PageView on every homepage load. NOTE: the Lead
+       event is intentionally NOT fired here; it fires in the form submit handler with a
+       shared eventID (see the #lead-form submit listener) so it dedupes with /thank-you. -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1397499955522386');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1397499955522386&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+
   <title>Bingo Home Buyers</title>
   <!-- LocalBusiness structured data (SEO + click-to-call). telephone is the primary A2P/CNAM-branded business line. -->
   <script type="application/ld+json">
@@ -1802,6 +1823,36 @@
         submitBtn.innerHTML = 'Sending...';
         submitBtn.style.opacity = '0.6';
 
+        // ---- Meta Pixel Lead (deduped) ----
+        // Generate ONE eventID at the reliable submit moment and stash it in sessionStorage
+        // so /thank-you can reuse the SAME id after navigation — Meta dedupes the two fires
+        // (and a future server-side CAPI Lead) into a single Lead. Fire the browser Lead now
+        // so it isn't lost if a mobile user bounces before /thank-you paints. The whole block
+        // is wrapped in try/catch so a pixel/storage failure can NEVER block the GHL POST below.
+        var leadEventId = '';
+        try {
+          leadEventId = (window.crypto && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : ('lead-' + Date.now() + '-' + Math.random().toString(16).slice(2));
+          sessionStorage.setItem('bingo_lead_eventid', leadEventId);
+          if (window.fbq) fbq('track', 'Lead', {}, { eventID: leadEventId });
+        } catch (_) {}
+
+        // TODO: enable after META_CAPI_TOKEN env var is set and tested.
+        // Server-side CAPI Lead — reliable server copy, deduped via the SAME leadEventId.
+        // Fire-and-forget; keepalive lets it finish as the browser navigates away.
+        // fetch('/api/meta-capi-lead', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   keepalive: true,
+        //   body: JSON.stringify({
+        //     eventID: leadEventId,
+        //     email: form.email.value.trim(),
+        //     phone: form.phone.value.trim() ? '+1' + form.phone.value.trim().replace(/\D/g, '') : '',
+        //     eventSourceUrl: window.location.href
+        //   })
+        // }).catch(function() {});
+
         const data = {
           firstName: firstName,
           lastName:  lastName,
@@ -1836,7 +1887,8 @@
             keepalive: true
           }).catch(function() {});
 
-          // Lead + PageView fire on the thank-you page, not here.
+          // Browser Lead already fired above with a shared eventID; /thank-you re-fires it
+          // with the same id (deduped) plus its own PageView.
           window.location.href = '/thank-you';
         } catch (err) {
           submitBtn.disabled = false;

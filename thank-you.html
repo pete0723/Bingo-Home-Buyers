@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Standalone confirmation page. NOT linked in nav. Loaded after a lead-form submit. -->
-<!-- IMPORTANT: This is the ONLY page that carries Meta Pixel 1397499955522386. -->
-<!-- Do not move this pixel into a shared include — it must fire only on /thank-you. -->
+<!-- Meta Pixel 1397499955522386. The Lead fired here is DEDUPED with the submit-time fire -->
+<!-- in index.html via a shared eventID in sessionStorage (key: bingo_lead_eventid). -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -21,7 +21,20 @@
   'https://connect.facebook.net/en_US/fbevents.js');
   fbq('init', '1397499955522386');
   fbq('track', 'PageView');
-  fbq('track', 'Lead');
+  // Deduped Lead: only fire if the visitor genuinely came from a form submit — i.e. the
+  // submit handler stashed an eventID in sessionStorage. Reuse that SAME id so Meta dedupes
+  // this fire with the submit-time fire (and a future server-side CAPI Lead), then clear it
+  // so a refresh, back-nav, or direct/bookmarked visit to /thank-you can't re-fire (or fire
+  // a phantom) Lead. PageView still fires on every load, above.
+  (function() {
+    try {
+      var leadEventId = sessionStorage.getItem('bingo_lead_eventid');
+      if (leadEventId) {
+        fbq('track', 'Lead', {}, { eventID: leadEventId });
+        sessionStorage.removeItem('bingo_lead_eventid');
+      }
+    } catch (e) {}
+  })();
   </script>
   <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=1397499955522386&ev=PageView&noscript=1"
