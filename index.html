@@ -864,6 +864,10 @@
       #hero > div:nth-child(4) > div:first-child > div {
         justify-content: center;
       }
+      /* On mobile, surface the lead form first so it's reachable without scrolling,
+         and top-align the hero (instead of vertical-centering) so it sits near the top. */
+      #hero { align-items: flex-start !important; padding-top: 100px !important; }
+      #hero > div:nth-child(4) > .glow-card { order: -1; }
     }
     @media (max-width: 768px) {
       .desktop-nav { display: none !important; }
@@ -986,7 +990,7 @@
       <div class="glow-card" style="padding:36px 32px;">
         <p style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;letter-spacing:0.04em;color:rgba(249,248,248,0.85);text-align:center;margin:0 0 8px;">Bingo Home Buyers LLC</p>
         <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#f9f8f8;margin:0 0 6px;text-align:center;">Get Your Free Cash Offer</h2>
-        <p style="font-size:13px;color:rgba(249,248,248,0.45);text-align:center;margin:0 0 22px;">Enter your address for a free, no-obligation cash offer. We'll reach out shortly.</p>
+        <p id="form-subtitle" style="font-size:13px;color:rgba(249,248,248,0.45);text-align:center;margin:0 0 22px;">Enter your address for a free, no-obligation cash offer. We'll reach out shortly.</p>
 
         <form id="lead-form">
           <!-- ══ STEP 1 — address first (minimal friction) ══ -->
@@ -1646,6 +1650,7 @@
       const submitBtn = step2.querySelector('button[type="submit"]');
       const submitBtnHTML = submitBtn.innerHTML;
       const addrDisplay = document.getElementById('selected-address-display');
+      const subtitle = document.getElementById('form-subtitle');
 
       const hidden = {
         address:   form.querySelector('input[name="address"]'),
@@ -1842,10 +1847,14 @@
           hidden.formatted.value = val;
         }
         addrDisplay.querySelector('.addr').textContent = hidden.formatted.value || val;
+        if (subtitle) subtitle.textContent = 'Almost done — how should we reach you with your offer?';
         closeSuggestions();
         showStep(step2, step1, form.querySelector('input[name="fullName"]'));
       }
-      function goToStep1() { showStep(step1, step2, addrInput); }
+      function goToStep1() {
+        if (subtitle) subtitle.textContent = "Enter your address for a free, no-obligation cash offer. We'll reach out shortly.";
+        showStep(step1, step2, addrInput);
+      }
 
       nextBtn.addEventListener('click', goToStep2);
       backBtn.addEventListener('click', goToStep1);
