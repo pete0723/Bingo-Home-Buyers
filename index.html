@@ -1889,20 +1889,20 @@
           if (window.fbq) fbq('track', 'Lead', {}, { eventID: leadEventId });
         } catch (_) {}
 
-        // TODO: enable after META_CAPI_TOKEN env var is set and tested.
-        // Server-side CAPI Lead — reliable server copy, deduped via the SAME leadEventId.
+        // Server-side CAPI Lead (ACTIVE) — deduped via the SAME leadEventId as the browser fire above.
+        // Reliable server copy in case the browser pixel is blocked/lost.
         // Fire-and-forget; keepalive lets it finish as the browser navigates away.
-        // fetch('/api/meta-capi-lead', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   keepalive: true,
-        //   body: JSON.stringify({
-        //     eventID: leadEventId,
-        //     email: form.email.value.trim(),
-        //     phone: form.phone.value.trim() ? '+1' + form.phone.value.trim().replace(/\D/g, '') : '',
-        //     eventSourceUrl: window.location.href
-        //   })
-        // }).catch(function() {});
+        fetch('/api/meta-capi-lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          keepalive: true,
+          body: JSON.stringify({
+            eventID: leadEventId,
+            email: form.email.value.trim(),
+            phone: form.phone.value.trim() ? '+1' + form.phone.value.trim().replace(/\D/g, '') : '',
+            eventSourceUrl: window.location.href
+          })
+        }).catch(function() {});
 
         const data = {
           firstName: firstName,
