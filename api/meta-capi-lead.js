@@ -84,7 +84,7 @@ module.exports = async function handler(req, res) {
           user_data: user_data
         }
       ]
-      , test_event_code: 'TEST83565'  // TEMP diagnostic — REVERT before real traffic (test events don't count toward optimization)
+      // , test_event_code: 'TESTxxxxx'  // uncomment + set to watch events in Meta Test Events
     };
 
     const resp = await fetch(
