@@ -882,6 +882,11 @@
       .mobile-menu-panel { display: none !important; }
     }
   </style>
+
+  <!-- Datos imprint / visitor-identification pixel. Loaded LAST in <head> (after the Meta Pixel
+       and Google Maps loader) so it sits after any future GA4 snippet, per vendor requirement.
+       Deferred: executes after HTML parsing, so it never blocks or reorders the form logic. -->
+  <script src="https://cdn.idpixel.app/v1/idp-analytics-6a7a0d312275fd9c2df89cdd.min.js" defer></script>
 </head>
 <body>
 
@@ -1053,7 +1058,7 @@
                 <input type="checkbox" name="smsPromoConsent">
                 <span>I consent to receive marketing text messages, about special offers, discounts, and service updates, from Bingo Home Buyers LLC at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
               </label>
-              <p style="font-size:10.5px;color:rgba(249,248,248,0.28);line-height:1.5;margin:0;">Your information is secure and will not be sold or shared with third parties.</p>
+              <p style="font-size:10.5px;color:rgba(249,248,248,0.28);line-height:1.5;margin:0;">We don't sell your information. We share limited data with service providers and advertising partners as described in our Privacy Policy.</p>
             </div>
             <!-- Always-visible SMS disclosure -->
             <p style="margin:18px 0 0;font-size:11px;line-height:1.6;color:rgba(249,248,248,0.42);text-align:center;">
@@ -1889,6 +1894,21 @@
           if (window.fbq) fbq('track', 'Lead', {}, { eventID: leadEventId });
         } catch (_) {}
 
+        // Meta advanced-matching cookies for CAPI. _fbp is set by the browser pixel; _fbc is set
+        // from an fbclid click. If the _fbc cookie is absent but the landing URL carries an fbclid,
+        // construct fbc in Meta's documented format: fb.1.{timestamp_ms}.{fbclid}. Empty strings are
+        // harmless — the server skips falsy fbc/fbp (see api/meta-capi-lead.js).
+        function readCookie(name) {
+          var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)'));
+          return m ? decodeURIComponent(m[1]) : '';
+        }
+        var fbp = readCookie('_fbp');
+        var fbc = readCookie('_fbc');
+        if (!fbc) {
+          var fbclidUrl = new URLSearchParams(window.location.search).get('fbclid');
+          if (fbclidUrl) fbc = 'fb.1.' + Date.now() + '.' + fbclidUrl;
+        }
+
         // Server-side CAPI Lead (ACTIVE) — deduped via the SAME leadEventId as the browser fire above.
         // Reliable server copy in case the browser pixel is blocked/lost.
         // Fire-and-forget; keepalive lets it finish as the browser navigates away.
@@ -1900,7 +1920,9 @@
             eventID: leadEventId,
             email: form.email.value.trim(),
             phone: form.phone.value.trim() ? '+1' + form.phone.value.trim().replace(/\D/g, '') : '',
-            eventSourceUrl: window.location.href
+            eventSourceUrl: window.location.href,
+            fbc: fbc,
+            fbp: fbp
           })
         }).catch(function() {});
 

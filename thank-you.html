@@ -241,6 +241,11 @@
       .card, .seal { animation: none; }
     }
   </style>
+
+  <!-- Datos imprint / visitor-identification pixel. Loaded LAST in <head> (after the Meta Pixel)
+       so it sits after any future GA4 snippet, per vendor requirement. Deferred: executes after
+       HTML parsing. (This page has no form / Google Maps loader.) -->
+  <script src="https://cdn.idpixel.app/v1/idp-analytics-6a7a0d312275fd9c2df89cdd.min.js" defer></script>
 </head>
 <body>
   <main class="stage">

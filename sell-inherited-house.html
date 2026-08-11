@@ -100,6 +100,11 @@
   .sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,253,249,.92);backdrop-filter:blur(8px);border-top:1px solid #e7e5e1;padding:11px 16px;display:none}
   @media(max-width:899px){.sticky-cta{display:block}body{padding-bottom:72px}}
 </style>
+
+<!-- Datos imprint / visitor-identification pixel. Loaded LAST in <head> (after the Meta Pixel
+     and Google Maps loader) so it sits after any future GA4 snippet, per vendor requirement.
+     Deferred: executes after HTML parsing, so it never blocks or reorders the form logic. -->
+<script src="https://cdn.idpixel.app/v1/idp-analytics-6a7a0d312275fd9c2df89cdd.min.js" defer></script>
 </head>
 <body>
 
@@ -429,8 +434,14 @@
         sessionStorage.setItem('bingo_lead_eventid', leadEventId);
         if (window.fbq) fbq('track','Lead',{},{eventID:leadEventId});
       }catch(_){}
+      // Meta advanced-matching cookies for CAPI. _fbp is set by the browser pixel; _fbc from an
+      // fbclid click. If _fbc is absent but the URL carries an fbclid, construct fb.1.{ts}.{fbclid}.
+      // Empty strings are harmless — the server skips falsy fbc/fbp (see api/meta-capi-lead.js).
+      function readCookie(name){ var m=document.cookie.match(new RegExp('(?:^|;\\s*)'+name+'=([^;]*)')); return m?decodeURIComponent(m[1]):''; }
+      var fbp=readCookie('_fbp'); var fbc=readCookie('_fbc');
+      if(!fbc){ var fbclidUrl=qp('fbclid'); if(fbclidUrl) fbc='fb.1.'+Date.now()+'.'+fbclidUrl; }
       fetch('/api/meta-capi-lead',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,
-        body:JSON.stringify({eventID:leadEventId,email:'',phone:data.phone,eventSourceUrl:location.href})}).catch(function(){});
+        body:JSON.stringify({eventID:leadEventId,email:'',phone:data.phone,eventSourceUrl:location.href,fbc:fbc,fbp:fbp})}).catch(function(){});
       try{
         fetch(GHL_WEBHOOK,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
           body:new URLSearchParams(data).toString(),mode:'no-cors',keepalive:true}).catch(function(){});

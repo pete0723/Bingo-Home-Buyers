@@ -2,10 +2,11 @@
 //
 // Vercel serverless function — server-side Meta Conversions API (CAPI) "Lead" event.
 //
-// ⚠️  SCAFFOLD ONLY — NOT wired to the live form yet.
-//     The client-side fetch to this endpoint is commented out in index.html on purpose
-//     (search for "TODO: enable after META_CAPI_TOKEN"). Enable it deliberately AFTER you
-//     set META_CAPI_TOKEN in Vercel and test it. Until then this file does nothing.
+// ✅  LIVE as of commit 7e18b4b (META_CAPI_TOKEN set in Vercel).
+//     The client-side fetch to this endpoint is ACTIVE in both index.html and
+//     sell-inherited-house.html (the #lead-form submit handlers POST here on submit).
+//     If META_CAPI_TOKEN is ever unset, this endpoint still no-ops cleanly (HTTP 200, skipped)
+//     so the client never sees an error.
 //
 // Why it exists: the browser pixel can be blocked by ad-blockers, dropped on fast mobile
 // navigation, or lost entirely. A server-side Lead is the reliable copy. It is sent with the
