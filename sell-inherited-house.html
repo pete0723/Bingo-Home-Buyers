@@ -8,7 +8,8 @@
 <meta name="robots" content="noindex">
 
 <!-- Meta Pixel — same ID as the main site (1397499955522386). PageView on load;
-     the Lead event fires (deduped) on form submit and again on /thank-you. -->
+     the Lead event fires on form submit (browser pixel + server CAPI, deduped via a
+     shared eventID). /thank-you fires PageView only. -->
 <script>
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
@@ -431,7 +432,6 @@
       var leadEventId='';
       try{
         leadEventId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('lead-'+Date.now()+'-'+Math.random().toString(16).slice(2));
-        sessionStorage.setItem('bingo_lead_eventid', leadEventId);
         if (window.fbq) fbq('track','Lead',{},{eventID:leadEventId});
       }catch(_){}
       // Meta advanced-matching cookies for CAPI. _fbp is set by the browser pixel; _fbc from an

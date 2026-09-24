@@ -8,7 +8,7 @@
 
   <!-- Meta Pixel Code — base/init + PageView on every homepage load. NOTE: the Lead
        event is intentionally NOT fired here; it fires in the form submit handler with a
-       shared eventID (see the #lead-form submit listener) so it dedupes with /thank-you. -->
+       shared eventID (see the #lead-form submit listener) so it dedupes with the server CAPI Lead. -->
   <script>
   !function(f,b,e,v,n,t,s)
   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -1880,17 +1880,16 @@
         submitBtn.style.opacity = '0.6';
 
         // ---- Meta Pixel Lead (deduped) ----
-        // Generate ONE eventID at the reliable submit moment and stash it in sessionStorage
-        // so /thank-you can reuse the SAME id after navigation — Meta dedupes the two fires
-        // (and a future server-side CAPI Lead) into a single Lead. Fire the browser Lead now
-        // so it isn't lost if a mobile user bounces before /thank-you paints. The whole block
-        // is wrapped in try/catch so a pixel/storage failure can NEVER block the GHL POST below.
+        // Generate ONE eventID at the reliable submit moment and share it with the server-side
+        // CAPI Lead below — Meta dedupes browser + server into a single Lead. This submit-time
+        // fire is the ONLY browser Lead (/thank-you fires PageView only; Meta does not dedupe
+        // browser-vs-browser). The whole block is wrapped in try/catch so a pixel failure can
+        // NEVER block the GHL POST below.
         var leadEventId = '';
         try {
           leadEventId = (window.crypto && crypto.randomUUID)
             ? crypto.randomUUID()
             : ('lead-' + Date.now() + '-' + Math.random().toString(16).slice(2));
-          sessionStorage.setItem('bingo_lead_eventid', leadEventId);
           if (window.fbq) fbq('track', 'Lead', {}, { eventID: leadEventId });
         } catch (_) {}
 
@@ -1960,8 +1959,8 @@
             keepalive: true
           }).catch(function() {});
 
-          // Browser Lead already fired above with a shared eventID; /thank-you re-fires it
-          // with the same id (deduped) plus its own PageView.
+          // Browser Lead already fired above (deduped with CAPI via the shared eventID);
+          // /thank-you fires PageView only.
           window.location.href = '/thank-you';
         } catch (err) {
           submitBtn.disabled = false;
