@@ -281,6 +281,14 @@
     var placeSelected = false;
 
     function qp(k){ try { return new URLSearchParams(location.search).get(k) || ''; } catch(_){ return ''; } }
+    // Phone normalisation (shared by the GHL payload and the CAPI Lead body, which reuses data.phone).
+    // Digits only; drop a typed leading US country code (11 digits starting with 1) so it can't
+    // double up as +11…; then +1 plus the 10 digits. Anything else is sent as raw digits, unchanged.
+    function normalizePhone(raw){
+      var digits = String(raw||'').replace(/\D/g,'');
+      if (digits.length===11 && digits.charAt(0)==='1') digits = digits.slice(1);
+      return digits.length===10 ? '+1'+digits : digits;
+    }
 
     // ---- Google Places (New), lazy; degrades to plain text if unavailable ----
     var placesReady = false, AutocompleteSuggestion, AutocompleteSessionToken, sessionToken;
@@ -412,7 +420,7 @@
         name: name,
         address1: hidden.address.value.trim() || addrInput.value.trim(),
         city: hidden.city.value.trim(), state: hidden.state.value.trim(), postalCode: hidden.zip.value.trim(),
-        phone: phone ? '+1'+phone.replace(/\D/g,'') : '',
+        phone: normalizePhone(phone),
         email:'', timeline:'',
         smsConsent: form.smsConsent && form.smsConsent.checked ? 'Yes':'No',
         source:'Bingo Advertorial — Inherited',

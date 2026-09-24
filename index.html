@@ -1866,6 +1866,16 @@
       const editLink = addrDisplay.querySelector('.edit');
       if (editLink) editLink.addEventListener('click', goToStep1);
 
+      // ---- Phone normalisation (shared by the GHL payload and the CAPI Lead body) ----
+      // Digits only; drop a typed leading US country code (11 digits starting with 1) so it
+      // can't double up as +11…; then +1 plus the 10 digits. Anything that still isn't exactly
+      // 10 digits is sent as its raw digits, unchanged, rather than guessed at.
+      function normalizePhone(raw) {
+        var digits = String(raw || '').replace(/\D/g, '');
+        if (digits.length === 11 && digits.charAt(0) === '1') digits = digits.slice(1);
+        return digits.length === 10 ? '+1' + digits : digits;
+      }
+
       // ---- Submit → GHL webhook (keepalive fire-and-navigate to /thank-you) ----
       form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -1918,7 +1928,7 @@
           body: JSON.stringify({
             eventID: leadEventId,
             email: form.email.value.trim(),
-            phone: form.phone.value.trim() ? '+1' + form.phone.value.trim().replace(/\D/g, '') : '',
+            phone: normalizePhone(form.phone.value),
             eventSourceUrl: window.location.href,
             fbc: fbc,
             fbp: fbp
@@ -1933,7 +1943,7 @@
           city:      hidden.city.value.trim(),
           state:     hidden.state.value.trim(),
           postalCode: hidden.zip.value.trim(),
-          phone:     form.phone.value.trim() ? '+1' + form.phone.value.trim().replace(/\D/g, '') : '',
+          phone:     normalizePhone(form.phone.value),
           email:     form.email.value.trim(),
           timeline:  form.timeline.value,
           // SMS consent is OPTIONAL (A2P 10DLC: consent checkboxes cannot be required).
