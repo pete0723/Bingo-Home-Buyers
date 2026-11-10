@@ -18,7 +18,7 @@ const ASSETS = [
   'thank-you.html',
   'sell-inherited-house.html',
   'sell-inherited-house-hero.png',
-  'hero-family.jpg',
+  'hero-family-v2.jpg',
   'privacy-policy.html',
   'terms-of-service.html',
   'favicon.ico',
