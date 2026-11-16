@@ -15,6 +15,8 @@ const KEY = (process.env.GOOGLE_MAPS_API_KEY || '').trim();
 // Everything the live site serves.
 const ASSETS = [
   'index.html',
+  'relief-fund.html',
+  'cash-offer.html',
   'thank-you.html',
   'sell-inherited-house.html',
   'sell-inherited-house-hero.png',
@@ -31,7 +33,7 @@ const ASSETS = [
   'Brand_assets',
 ];
 // HTML that needs the Google Maps key placeholder injected (pages with the address autocomplete).
-const HTML_FILES = ['index.html', 'thank-you.html', 'sell-inherited-house.html'];
+const HTML_FILES = ['index.html', 'relief-fund.html', 'cash-offer.html', 'thank-you.html', 'sell-inherited-house.html'];
 
 if (!KEY) {
   console.warn('[build] WARNING: GOOGLE_MAPS_API_KEY is not set — address autocomplete will be disabled. ' +
