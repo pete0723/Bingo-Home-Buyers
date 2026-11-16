@@ -247,6 +247,21 @@
     .faq-list summary { font-size: 16px; padding: 18px 2px; }
   }
 
+
+  /* ---------- Cash Offer hero ---------- */
+  .hero-rating { margin: 0 0 18px; font-family: var(--font-head); font-weight: 600; font-size: clamp(15px, 1.4vw, 19px); color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .hero-rating .stars { color: #ffc531; letter-spacing: 3px; font-size: 1.15em; }
+  .hero h1.h1-offer { font-size: clamp(38px, 5.6vw, 78px); line-height: 1.02; letter-spacing: -0.04em; max-width: 1200px; margin-bottom: 22px; }
+  .hero h1.h1-offer span { display: block; }
+  .hero p.sub-offer { font-size: clamp(17px, 1.9vw, 26px); font-weight: 400; color: rgba(255,255,255,.88); max-width: none; margin-bottom: 34px; }
+  @media (min-width: 1000px) { .hero .hero-inner { padding-top: 80px; } }
+  @media (max-width: 600px) {
+    .hero h1.h1-offer { font-size: 36px; }
+    .hero h1.h1-offer span { display: inline; }
+    .hero p.sub-offer { font-size: 16px; }
+    .hero-rating { font-size: 14px; gap: 6px; }
+  }
+
   /* ---------- Footer ---------- */
   .site-footer { background: #0a0f1a; color: rgba(255,255,255,.7); text-align: center; }
   .site-footer .wrap { padding-block: 48px 40px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
@@ -322,8 +337,9 @@
     <div class="wrap">
       <section class="hero" aria-label="Get your cash offer">
         <div class="hero-inner">
-          <h1>Sell your house fast for cash.</h1>
-          <p class="sub">Get a fair, no-obligation cash offer within 24 hours. No cleaning, no showings, and no costly repairs. Sell your house as-is and close in as few as 7 days.</p>
+          <p class="hero-rating"><span class="stars" aria-hidden="true">★★★★★</span> Rated 5.0 stars by sellers on Facebook</p>
+          <h1 class="h1-offer"><span>Get an offer in 24 hours.</span> <span>Turn your home into cash.</span></h1>
+          <p class="sub sub-offer">No agents. No fees. No repairs. No obligation.</p>
           <form id="lead-form">
           <!-- ══ STEP 1 — address first (minimal friction) ══ -->
           <div class="form-step" data-step="1">
@@ -335,7 +351,7 @@
                        role="combobox" aria-autocomplete="list" aria-controls="address-suggestions" aria-expanded="false">
                 <ul id="address-suggestions" class="address-suggestions" role="listbox" aria-label="Address suggestions" hidden></ul>
               </div>
-              <button type="button" id="step1-next" class="btn" aria-label="Get my cash offer"><span class="btn-label">Get My Cash Offer</span>
+              <button type="button" id="step1-next" class="btn" aria-label="Get my offer"><span class="btn-label">Get my offer</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </button>
             </div>
@@ -352,7 +368,6 @@
             <input type="hidden" name="utm_content">
             <input type="hidden" name="fbclid">
             <p id="address-hint" class="form-hint" hidden></p>
-            <p class="form-note">Takes 30 seconds<span class="sep"> · </span> No obligation · No fees</p>
           </div>
 
 
