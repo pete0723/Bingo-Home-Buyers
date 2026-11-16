@@ -249,14 +249,11 @@
 
 
   /* ---------- Relief Fund page ---------- */
-  .hero-eyebrow { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 10px; margin: 0 auto 16px; padding: 7px 16px; border-radius: 999px;
-    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28); font-size: 13.5px; line-height: 1.35; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,.35); max-width: 100%; }
-  .hero-eyebrow strong { font-family: var(--font-head); font-weight: 800; color: #ffd9d9; letter-spacing: .01em; }
-  .hero-eyebrow .dot { opacity: .6; }
+  .hero-rating { margin: 0 0 18px; font-family: var(--font-head); font-weight: 600; font-size: clamp(15px, 1.4vw, 19px); color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .hero-rating .stars { color: #ffc531; letter-spacing: 3px; font-size: 1.15em; }
   .hero h1.h1-fund { font-size: clamp(30px, 3.8vw, 48px); max-width: 1000px; }
-  .hero.hero-fund { min-height: 1000px; background-position: 0 0, center 6%; }
-  .hero.hero-fund .hero-inner { padding-top: 64px; }
-  .hero p.sub-2 { margin-top: -16px; }
+  .hero.hero-fund { min-height: 900px; justify-content: flex-start; background-position: 0 0, center 52%; }
+  .hero.hero-fund .hero-inner { padding-top: 80px; }
   .section-title.left { text-align: left; }
   section.fund-intro { padding-block: 88px 72px; }
   .fund-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; max-width: 1100px; }
@@ -275,18 +272,17 @@
   section.final-cta { padding-block: 88px; text-align: center; }
   .final-cta h2 { margin: 0 0 10px; font-family: var(--font-head); font-weight: 800; font-size: clamp(30px, 4.4vw, 46px); letter-spacing: -0.035em; line-height: 1.1; color: var(--ink); text-wrap: balance; }
   .final-cta > .wrap > p:first-of-type { margin: 0 0 28px; font-size: 18px; color: var(--muted); }
-  .final-cta .disclaimer { margin: 36px auto 0; max-width: 680px; font-size: 13px; line-height: 1.6; color: var(--muted); background: var(--soft); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; text-align: left; }
   @media (max-width: 999px) {
-    .hero.hero-fund { min-height: 1080px; background-position: 0 0, 62% bottom; }
+    .hero.hero-fund { min-height: 960px; background-position: 0 0, 62% bottom; }
   }
   @media (max-width: 900px) {
     .fund-grid { grid-template-columns: 1fr; gap: 32px; }
     .step-grid { grid-template-columns: 1fr; max-width: 560px; }
   }
   @media (max-width: 600px) {
-    .hero-eyebrow { font-size: 12px; padding: 6px 12px; border-radius: 14px; }
     .hero h1.h1-fund { font-size: 29px; }
-    .hero.hero-fund { min-height: 1120px; background-position: 0 0, 60% bottom; }
+    .hero-rating { font-size: 14px; gap: 6px; }
+    .hero.hero-fund { min-height: 1000px; background-position: 0 0, 60% bottom; }
     .hero.hero-fund .hero-inner { padding-top: 32px; }
     section.fund-intro, section.final-cta { padding-block: 56px; }
     section.steps { padding-block: 56px; }
@@ -368,10 +364,9 @@
     <div class="wrap">
       <section class="hero hero-fund" aria-label="See if your property qualifies">
         <div class="hero-inner">
-          <p class="hero-eyebrow"><strong>Bingo Homeowner Relief Fund</strong><span class="dot" aria-hidden="true">·</span>A privately funded home-sale option for Ohio homeowners</p>
-          <h1 class="h1-fund">Move Forward Without Costly Repairs, Agent Commissions, or Months of Waiting</h1>
-          <p class="sub">Unexpected expenses, major repairs, or life changes can make owning a property more difficult than it needs to be.</p>
-          <p class="sub sub-2">Through the Bingo Homeowner Relief Fund, qualifying Ohio property owners can receive a no-obligation cash purchase offer, sell their property as-is, and move forward on a timeline that works for them.</p>
+          <p class="hero-rating"><span class="stars" aria-hidden="true">★★★★★</span> Rated 5.0 stars by sellers on Facebook</p>
+          <h1 class="h1-fund">Finally, Relief for Ohio Homeowners Facing Costly Repairs and Mounting Property Expenses</h1>
+          <p class="sub">Through the new Bingo Homeowner Relief Fund, qualifying Ohio property owners can receive a no-obligation cash purchase offer and sell their homes as-is, without paying for costly repairs or agent commissions.</p>
           <form id="lead-form">
           <!-- ══ STEP 1 — address first (minimal friction) ══ -->
           <div class="form-step" data-step="1">
@@ -454,20 +449,6 @@
           </form>
         </div>
 
-        <div class="hero-stats">
-          <div class="stat">
-            <div class="num">5.0 <span class="stars" aria-hidden="true">★★★★★</span></div>
-            <div class="lbl">Facebook rating</div>
-          </div>
-          <div class="stat">
-            <div class="num">1,000+</div>
-            <div class="lbl">Homeowners served</div>
-          </div>
-          <div class="stat">
-            <div class="num">14 days</div>
-            <div class="lbl">Average time to close</div>
-          </div>
-        </div>
       </section>
     </div>
 
@@ -508,7 +489,6 @@
         <h2 id="final-title">Find Out If Your Property Qualifies</h2>
         <p>Take the first step toward a simpler solution.</p>
         <a class="btn" href="#lead-form" style="text-decoration:none;">Request My Free Property Review <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <p class="disclaimer"><strong>Important:</strong> The Bingo Homeowner Relief Fund is a privately funded property purchase program operated by Bingo Home Buyers LLC. It is not a government assistance program, grant, or loan. Cash is paid in exchange for the sale of a qualifying property.</p>
       </div>
     </section>
 
@@ -520,7 +500,6 @@
       <p class="f-q">Have a question? <a href="tel:+16149645684">(614) 964-5684</a></p>
       <p class="f-mail"><a href="mailto:info@bingohomebuyers.com">info@bingohomebuyers.com</a> · Serving homeowners across Ohio</p>
       <p class="f-legal">© 2026 Bingo Home Buyers LLC. All rights reserved. · <a href="/privacy-policy">Privacy Policy</a> · <a href="/terms-of-service">Terms of Service</a></p>
-      <p class="f-disc"><strong>Important:</strong> The Bingo Homeowner Relief Fund is a privately funded property purchase program operated by Bingo Home Buyers LLC. It is not a government assistance program, grant, or loan. Cash is paid in exchange for the sale of a qualifying property.</p>
       <p class="f-disc">Bingo Home Buyers LLC is a real estate investment company that buys houses directly. It is not a licensed real estate brokerage and does not provide legal, tax, or financial advice.</p>
     </div>
   </footer>
