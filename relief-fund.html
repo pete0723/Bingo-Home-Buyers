@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<!-- v3.0: Opendoor-style landing homepage -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="facebook-domain-verification" content="dd36jzk1ukzn08p29uya4k2o4hkxer" />
+
+  <!-- Meta Pixel Code — base/init + PageView on every homepage load. NOTE: the Lead
+       event is intentionally NOT fired here; it fires in the form submit handler with a
+       shared eventID (see the #lead-form submit listener) so it dedupes with the server CAPI Lead. -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1397499955522386');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1397499955522386&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <title>Bingo Homeowner Relief Fund | Bingo Home Buyers</title>
+  <!-- LocalBusiness structured data (SEO + click-to-call). telephone is the primary A2P/CNAM-branded business line. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Bingo Home Buyers",
+    "description": "We buy houses for cash across Ohio — any condition, any situation. No fees, no commissions, and fast closings.",
+    "url": "https://www.bingohomebuyers.com",
+    "telephone": "+1-614-964-5684",
+    "email": "info@bingohomebuyers.com",
+    "image": "https://www.bingohomebuyers.com/icon-192.png",
+    "logo": "https://www.bingohomebuyers.com/icon-192.png",
+    "areaServed": { "@type": "State", "name": "Ohio" },
+    "address": { "@type": "PostalAddress", "addressRegion": "OH", "addressCountry": "US" },
+    "priceRange": "$$"
+  }
+  </script>
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <!-- Google Maps / Places API (New) loader. Key is injected at build time from the
+       GOOGLE_MAPS_API_KEY env var (see build.mjs / serve.mjs). Never commit the real key. -->
+  <script>
+    (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
+      key: "__GOOGLE_MAPS_API_KEY__",
+      v: "weekly",
+    });
+  </script>
+<style>
+  /* Layout: white Opendoor-style page. Logo + phone bar, inset rounded photo hero, reviews, benefits band. */
+  :root {
+    --red: #d63031;
+    --red-dark: #b82526;
+    --navy: #0f2233;
+    --ink: #1a2230;
+    --muted: #5b6573;
+    --line: #e7e9ee;
+    --soft: #f6f7f9;
+    --white: #ffffff;
+    --font-head: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --radius-lg: 28px;
+    --shadow: 0 1px 2px rgba(15,34,51,.06), 0 8px 24px rgba(15,34,51,.08);
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--white); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+  /* ---------- Top bar ---------- */
+  .topbar { padding-block: 14px; }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo img { height: 46px; width: auto; }
+  .phone { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-head); font-weight: 700; font-size: 15px; color: var(--navy); text-decoration: none; padding: 10px 18px; border: 1.5px solid var(--line); border-radius: 999px; transition: border-color .2s, color .2s; }
+  .phone:hover { border-color: var(--red); color: var(--red); }
+  .phone:focus-visible { outline: 3px solid rgba(214,48,49,.35); outline-offset: 2px; }
+  .phone svg { flex: none; }
+
+  /* ---------- Hero ---------- */
+  /* Opendoor-style hero: headline, subhead and address bar centered over the porch; family below; stats along the bottom. */
+  .hero { --fill: #1d2a36; position: relative; border-radius: var(--radius-lg); overflow: hidden; min-height: 820px; display: flex; flex-direction: column; justify-content: space-between;
+    background-color: var(--fill);
+    background-image:
+      linear-gradient(180deg, rgba(10,15,26,.74) 0%, rgba(10,15,26,.62) 30%, rgba(10,15,26,.30) 48%, rgba(10,15,26,0) 64%, rgba(10,15,26,.55) 100%),
+      url('/hero-family-v3.jpg');
+    background-repeat: no-repeat;
+    background-size: auto, cover;
+    background-position: 0 0, center 62%; }
+  .hero-inner { padding: 96px 24px 0; text-align: center; color: #fff; }
+  .hero h1 { font-family: var(--font-head); font-weight: 800; font-size: clamp(34px, 5.2vw, 62px); line-height: 1.04; letter-spacing: -0.035em; margin: 0 auto 16px; max-width: 1100px; text-wrap: balance; text-shadow: 0 2px 4px rgba(0,0,0,.25), 0 4px 28px rgba(0,0,0,.35); }
+  .hero .h1-kicker { display: block; font-size: clamp(17px, 2vw, 24px); font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; margin-bottom: 10px; }
+  .hero .h1-main { color: #ee3b3c; text-shadow: 0 1px 2px rgba(0,0,0,.5), 0 2px 22px rgba(0,0,0,.6); }
+  .hero p.sub { font-size: clamp(16px, 2vw, 19px); margin: 0 auto 28px; max-width: 880px; color: rgba(255,255,255,.95); text-wrap: balance; text-shadow: 0 1px 12px rgba(0,0,0,.45); }
+
+  .offer-form { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 999px; padding: 7px 7px 7px 20px; max-width: 600px; margin: 0 auto; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+  .offer-form svg.pin { flex: none; color: var(--red); }
+  .offer-form input { flex: 1; min-width: 0; border: 0; outline: 0; font: 500 16px var(--font-body); color: var(--ink); background: transparent; padding: 12px 4px; }
+  .offer-form input::placeholder { color: #8a929e; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; cursor: pointer; font-family: var(--font-head); font-weight: 700; font-size: 16px; color: #fff; background: var(--red); border-radius: 999px; padding: 14px 24px; white-space: nowrap; transition: background .2s, transform .15s; }
+  .btn:hover { background: var(--red-dark); }
+  .btn:active { transform: scale(.98); }
+  .btn:focus-visible { outline: 3px solid rgba(214,48,49,.4); outline-offset: 2px; }
+  .form-note { margin: 14px 0 0; font-size: 13px; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+
+
+  /* ---------- Lead form (same fields and script as the previous homepage) ---------- */
+  #lead-form { max-width: 600px; margin: 0 auto; }
+  .form-step { display: flex; flex-direction: column; gap: 0; }
+  .form-step[hidden] { display: none; }
+  .form-step.step-enter { animation: stepIn 380ms cubic-bezier(0.22,1,0.36,1) both; }
+  @keyframes stepIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  #lead-form .offer-form { width: 100%; min-width: 0; }
+  #lead-form #address-input { width: 100%; }
+  .offer-form .address-field { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; }
+  .offer-form .form-input { flex: 1; min-width: 0; border: 0; outline: 0; font: 500 16px var(--font-body); color: var(--ink); background: transparent; padding: 12px 4px; }
+  .offer-form .form-input::placeholder { color: #8a929e; }
+  .address-suggestions { position: absolute; top: calc(100% + 14px); left: -20px; right: -180px; z-index: 40; margin: 0; padding: 6px; list-style: none; text-align: left;
+    background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 44px -14px rgba(15,34,51,.35); max-height: 290px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .address-suggestions[hidden] { display: none; }
+  .address-suggestion { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: 50px; padding: 11px 14px; border-radius: 8px; cursor: pointer; }
+  .address-suggestion .main { font-size: 15px; color: var(--ink); font-weight: 500; line-height: 1.3; }
+  .address-suggestion .secondary { font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+  .address-suggestion:hover, .address-suggestion.active { background: rgba(214,48,49,.08); }
+  .places-attrib { display: flex; justify-content: flex-end; padding: 8px 6px 4px; pointer-events: none; }
+  .places-attrib img { height: 13px; opacity: .65; }
+  .form-hint { font-size: 13px; line-height: 1.5; text-align: center; margin: 12px 0 0; }
+  .form-hint.error { display: inline-block; align-self: center; background: #fff; color: #b42318; padding: 6px 14px; border-radius: 999px; font-weight: 600; }
+
+  /* Step 2: white card in the hero */
+  .step-card { background: #fff; color: var(--ink); text-align: left; border-radius: 20px; padding: 24px 22px 14px; gap: 12px; box-shadow: 0 18px 50px rgba(0,0,0,.28); }
+  .step-card-title { margin: 0 0 2px; font-family: var(--font-head); font-weight: 700; font-size: 17px; color: var(--ink); text-align: center; text-shadow: none; }
+  .step-card .form-input { width: 100%; background: #fff; border: 1px solid #d5d9e0; border-radius: 12px; padding: 13px 14px; font: 400 16px var(--font-body); color: var(--ink); outline: none; }
+  .step-card .form-input::placeholder { color: #8a929e; }
+  .step-card .form-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(214,48,49,.12); }
+  .step-card select.form-input { appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 36px;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%235b6573' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; }
+  .selected-address { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; background: rgba(214,48,49,.06); border: 1px solid rgba(214,48,49,.22); border-radius: 12px; padding: 11px 14px; }
+  .selected-address .addr { font-size: 14px; color: var(--ink); line-height: 1.45; }
+  .selected-address .edit { background: none; border: none; color: var(--red); font-weight: 600; font-size: 13px; font-family: var(--font-body); cursor: pointer; padding: 2px 6px; border-radius: 6px; flex-shrink: 0; }
+  .selected-address .edit:hover { text-decoration: underline; }
+  .consent-check { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+  .consent-check input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; min-width: 18px; border: 1.5px solid #b9c0ca; border-radius: 5px; background: #fff; cursor: pointer; position: relative; margin: 1px 0 0; }
+  .consent-check input[type="checkbox"]:checked { background: var(--red); border-color: var(--red); }
+  .consent-check input[type="checkbox"]:checked::after { content: ''; position: absolute; top: 2px; left: 5px; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .consent-check input[type="checkbox"]:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .consent-check span { font-size: 12px; line-height: 1.55; color: #4a5361; }
+  .consent-check span a, .step-card p a { color: var(--red); text-decoration: underline; }
+  .btn-block { width: 100%; padding: 15px 24px; }
+  .step-back { background: none; border: none; color: var(--muted); font-size: 14px; font-family: var(--font-body); cursor: pointer; padding: 8px; align-self: center; }
+  .step-back:hover { color: var(--ink); }
+  .step-back:focus-visible, .selected-address .edit:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .form-step.step-enter { animation: none; } }
+  @media (max-width: 600px) {
+    .address-suggestions { left: -16px; right: -64px; }
+    .step-card { padding: 20px 16px 10px; }
+  }
+
+  /* Stats strip along the bottom of the photo */
+  .hero-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 0 32px 30px; color: #fff; }
+  .stat { text-align: center; text-shadow: 0 1px 10px rgba(0,0,0,.4); }
+  .stat .num { font-family: var(--font-head); font-weight: 800; font-size: clamp(20px, 2.4vw, 28px); letter-spacing: -0.02em; line-height: 1.1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .stat .lbl { font-size: 13px; color: rgba(255,255,255,.85); margin-top: 4px; }
+  .stars { color: #ffc531; letter-spacing: 2px; font-size: .8em; }
+
+  /* ---------- Reviews ---------- */
+  section.reviews { padding-block: 88px 72px; }
+  .eyebrow { font-family: var(--font-head); font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); text-align: center; margin: 0 0 10px; }
+  .reviews h2 { font-family: var(--font-head); font-weight: 800; color: var(--red); font-size: clamp(30px, 4.4vw, 48px); letter-spacing: -0.035em; line-height: 1.08; text-align: center; margin: 0 0 12px; text-wrap: balance; }
+  .rating-line { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--muted); margin: 0 0 44px; }
+  .rating-line .stars { font-size: 16px; }
+  .review-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .review { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 26px 24px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px; }
+  .review-head { display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-head); font-weight: 700; color: #fff; background: var(--navy); flex: none; }
+  .avatar.r { background: var(--red); }
+  .review-name { font-family: var(--font-head); font-weight: 700; font-size: 15px; color: var(--ink); line-height: 1.2; }
+  .review-loc { font-size: 13px; color: var(--muted); }
+  .review .stars { font-size: 15px; }
+  .review p { margin: 0; font-size: 15px; color: #3a4350; line-height: 1.65; }
+
+  /* ---------- Benefits band ---------- */
+  .benefits { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--soft); }
+  .benefits .wrap { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; padding-block: 40px; }
+  .benefit { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .benefit .ic { width: 44px; height: 44px; border-radius: 50%; background: rgba(214,48,49,.1); color: var(--red); display: grid; place-items: center; }
+  .benefit .t { font-family: var(--font-head); font-weight: 700; font-size: 16px; color: var(--ink); line-height: 1.3; }
+
+  /* ---------- Comparison ---------- */
+  .section-title { font-family: var(--font-head); font-weight: 800; color: var(--ink); font-size: clamp(28px, 4vw, 42px); letter-spacing: -0.035em; line-height: 1.1; text-align: center; margin: 0 0 12px; text-wrap: balance; }
+  .section-title em { font-style: normal; color: var(--red); }
+  .section-sub { text-align: center; color: var(--muted); max-width: 560px; margin: 0 auto 40px; text-wrap: balance; }
+  section.compare { padding-block: 88px 24px; }
+  .table-scroll { overflow-x: auto; max-width: 900px; margin: 0 auto; border-radius: 16px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+  table.cmp { width: 100%; border-collapse: collapse; font-size: 15px; background: #fff; }
+  table.cmp th, table.cmp td { padding: 16px 20px; text-align: left; vertical-align: middle; }
+  table.cmp thead th { background: var(--navy); color: #fff; font-family: var(--font-head); font-weight: 700; font-size: 14px; }
+  table.cmp thead th.us { background: var(--red); }
+  table.cmp tbody tr + tr td { border-top: 1px solid var(--line); }
+  table.cmp tbody tr:nth-child(even) td { background: #fafbfc; }
+  table.cmp td.row { font-weight: 600; color: var(--ink); width: 30%; }
+  table.cmp td.us { font-weight: 700; color: var(--ink); background: rgba(214,48,49,.04) !important; }
+  table.cmp td.them { color: var(--muted); }
+  .mark { display: inline-flex; align-items: center; gap: 10px; }
+  .mark svg { flex: none; }
+  .yes { color: #1f9d55; }
+  .no { color: #c4c9d1; }
+  .center-cta { text-align: center; margin-top: 36px; }
+
+  /* ---------- FAQ ---------- */
+  section.faq { padding-block: 88px 88px; }
+  .faq-list { max-width: 780px; margin: 0 auto; border-top: 1px solid var(--line); }
+  .faq-list details { border-bottom: 1px solid var(--line); }
+  .faq-list summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 4px; font-family: var(--font-head); font-weight: 700; font-size: 17px; color: var(--ink); }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary:hover { color: var(--red); }
+  .faq-list summary:focus-visible { outline: 3px solid rgba(214,48,49,.35); outline-offset: 2px; border-radius: 6px; }
+  .faq-list summary .chev { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--soft); color: var(--ink); transition: transform .2s, background .2s; }
+  .faq-list details[open] summary .chev { transform: rotate(45deg); background: var(--red); color: #fff; }
+  .faq-list .ans { padding: 0 4px 22px; color: #3a4350; font-size: 15.5px; line-height: 1.7; max-width: 680px; }
+  .faq-call { text-align: center; margin-top: 28px; color: var(--muted); font-size: 15px; }
+  .faq-call a { color: var(--red); font-weight: 700; text-decoration: none; }
+  .faq-call a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    section.compare { padding-block: 56px 16px; }
+    section.faq { padding-block: 56px 56px; }
+    table.cmp { font-size: 13.5px; }
+    table.cmp th, table.cmp td { padding: 13px 10px; }
+    .mark { gap: 6px; }
+    .faq-list summary { font-size: 16px; padding: 18px 2px; }
+  }
+
+
+  /* ---------- Relief Fund page ---------- */
+  .hero-rating { margin: 0 0 18px; font-family: var(--font-head); font-weight: 600; font-size: clamp(15px, 1.4vw, 19px); color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .hero-rating .stars { color: #ffc531; letter-spacing: 3px; font-size: 1.15em; }
+  .hero .h1-red { color: #ee3b3c; text-shadow: 0 1px 2px rgba(0,0,0,.5), 0 2px 22px rgba(0,0,0,.6); }
+  .hero h1.h1-fund { font-size: clamp(30px, 3.8vw, 48px); max-width: 1000px; }
+  .hero.hero-fund { min-height: 900px; justify-content: flex-start; background-position: 0 0, center 52%; }
+  .hero.hero-fund .hero-inner { padding-top: 80px; }
+  .section-title.left { text-align: left; }
+  section.fund-intro { padding-block: 88px 72px; }
+  .fund-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; max-width: 1100px; }
+  .fund-copy p { margin: 0 0 16px; font-size: 17px; line-height: 1.7; color: #3a4350; max-width: 60ch; }
+  .qualify-card { background: var(--soft); border: 1px solid var(--line); border-radius: 20px; padding: 28px 26px; }
+  .qualify-card h3 { margin: 0 0 16px; font-family: var(--font-head); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; color: var(--ink); }
+  .qualify-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .qualify-list li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; line-height: 1.5; color: var(--ink); }
+  .qualify-list .tick { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(214,48,49,.12); color: var(--red); margin-top: -2px; }
+  section.steps { padding-block: 72px 88px; background: var(--soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .step-grid { list-style: none; margin: 40px auto 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; max-width: 1100px; }
+  .step { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 26px 24px; box-shadow: var(--shadow); }
+  .step-num { display: inline-block; font-family: var(--font-head); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
+  .step h3 { margin: 0 0 8px; font-family: var(--font-head); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; color: var(--ink); }
+  .step p { margin: 0; font-size: 15.5px; line-height: 1.65; color: #3a4350; }
+  section.final-cta { padding-block: 88px; text-align: center; }
+  .final-cta h2 { margin: 0 0 10px; font-family: var(--font-head); font-weight: 800; font-size: clamp(30px, 4.4vw, 46px); letter-spacing: -0.035em; line-height: 1.1; color: var(--ink); text-wrap: balance; }
+  .final-cta > .wrap > p:first-of-type { margin: 0 0 28px; font-size: 18px; color: var(--muted); }
+  @media (max-width: 999px) {
+    .hero.hero-fund { min-height: 960px; background-position: 0 0, 62% bottom; }
+  }
+  @media (max-width: 900px) {
+    .fund-grid { grid-template-columns: 1fr; gap: 32px; }
+    .step-grid { grid-template-columns: 1fr; max-width: 560px; }
+  }
+  @media (max-width: 600px) {
+    .hero h1.h1-fund { font-size: 29px; }
+    .hero-rating { font-size: 14px; gap: 6px; }
+    .hero.hero-fund { min-height: 1000px; background-position: 0 0, 60% bottom; }
+    .hero.hero-fund .hero-inner { padding-top: 32px; }
+    section.fund-intro, section.final-cta { padding-block: 56px; }
+    section.steps { padding-block: 56px; }
+    .fund-copy p { font-size: 16px; }
+  }
+
+  /* ---------- Footer ---------- */
+  .site-footer { background: #0a0f1a; color: rgba(255,255,255,.7); text-align: center; }
+  .site-footer .wrap { padding-block: 48px 40px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .site-footer p { margin: 0; }
+  .f-logo { height: 52px; width: auto; margin-bottom: 8px; }
+  .f-q { font-size: 15px; color: rgba(255,255,255,.85); }
+  .f-q a { color: #fff; font-family: var(--font-head); font-weight: 700; text-decoration: none; }
+  .f-mail { font-size: 14px; }
+  .f-mail a { color: inherit; text-decoration: none; }
+  .site-footer a:hover { color: #fff; text-decoration: underline; }
+  .site-footer a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 3px; }
+  .f-legal { font-size: 13px; margin-top: 12px !important; color: rgba(255,255,255,.55); }
+  .f-legal a { color: rgba(255,255,255,.75); }
+  .f-disc { font-size: 12px; color: rgba(255,255,255,.4); max-width: 640px; line-height: 1.6; }
+
+  /* Tablet + phone: same Opendoor layout in a taller card, cropped around the family. */
+  @media (max-width: 999px) {
+    .hero { min-height: 860px; border-radius: 22px; background-position: 0 0, 80% center; }
+    .hero-inner { padding: 52px 28px 0; }
+    .form-note { margin-top: 18px; font-size: 15px; line-height: 1.5; }
+    .hero-stats { gap: 8px; padding: 0 12px 26px; }
+  }
+  @media (max-width: 900px) {
+    .review-grid { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
+    .benefits .wrap { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 600px) {
+    .logo img { height: 38px; }
+    .phone { padding: 8px 12px; font-size: 14px; }
+
+    .hero { min-height: 800px; border-radius: 18px; background-position: 0 0, 58% top; }
+    .hero-inner { padding: 40px 16px 0; }
+    .hero h1 { font-size: 34px; line-height: 1.04; margin-bottom: 14px; }
+    .hero .h1-kicker { font-size: 16px; margin-bottom: 8px; }
+    .hero p.sub { font-size: 16px; line-height: 1.45; margin-bottom: 22px; }
+    .offer-form { padding: 6px 6px 6px 16px; }
+    .offer-form .field { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+    .offer-form input { font-size: 16px; padding: 12px 2px; }
+    .offer-form .btn { padding: 0; width: 50px; height: 50px; border-radius: 14px; flex: none; }
+    .offer-form .btn .btn-label { display: none; }
+    .offer-form .btn svg { width: 22px; height: 22px; }
+    .form-note .sep { display: block; height: 0; overflow: hidden; }
+    .hero-stats { padding: 0 6px 22px; gap: 6px; }
+    .stat .num { font-size: 20px; gap: 5px; }
+    .stat .num .stars { font-size: 11px; letter-spacing: 0; }
+    .stat .lbl { font-size: 11.5px; }
+    section.reviews { padding-block: 56px 48px; }
+  }
+  @media (min-width: 601px) { .offer-form .field { display: contents; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+  <!-- Datos imprint / visitor-identification pixel. Loaded LAST in <head> (after the Meta Pixel
+       and Google Maps loader) so it sits after any future GA4 snippet, per vendor requirement.
+       Deferred: executes after HTML parsing, so it never blocks or reorders the form logic. -->
+  <script src="https://cdn.idpixel.app/v1/idp-analytics-6a7a0d312275fd9c2df89cdd.min.js" defer></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="wrap">
+      <a class="logo" href="/" aria-label="Bingo Home Buyers">
+        <img src="/Brand_assets/bingo_logo_cropped.png" width="87" height="46" alt="Bingo Home Buyers">
+      </a>
+      <a class="phone" href="tel:+16149645684">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        (614) 964-5684
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero hero-fund" aria-label="See if your property qualifies">
+        <div class="hero-inner">
+          <p class="hero-rating"><span class="stars" aria-hidden="true">★★★★★</span> Rated 5.0 stars by sellers on Facebook</p>
+          <h1 class="h1-fund">Finally, <span class="h1-red">Relief for Ohio Homeowners</span> Facing Costly Repairs and Mounting Property Expenses</h1>
+          <p class="sub">Through the Bingo Homeowner Relief Fund, qualifying Ohio homeowners can explore a simpler way to sell and leave financial burdens behind.</p>
+          <form id="lead-form">
+          <!-- ══ STEP 1 — address first (minimal friction) ══ -->
+          <div class="form-step" data-step="1">
+            <div class="offer-form">
+              <div class="address-field">
+                <svg class="pin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+                <input id="address-input" type="text" class="form-input" autocomplete="off" spellcheck="false"
+                       placeholder="Enter your home address" aria-label="Property address" required
+                       role="combobox" aria-autocomplete="list" aria-controls="address-suggestions" aria-expanded="false">
+                <ul id="address-suggestions" class="address-suggestions" role="listbox" aria-label="Address suggestions" hidden></ul>
+              </div>
+              <button type="button" id="step1-next" class="btn" aria-label="See if your property qualifies"><span class="btn-label">See If Your Property Qualifies</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </div>
+            <!-- Structured address — populated when a suggestion is chosen; falls back to typed text -->
+            <input type="hidden" name="address">
+            <input type="hidden" name="city">
+            <input type="hidden" name="state">
+            <input type="hidden" name="zip">
+            <input type="hidden" name="formattedAddress">
+            <!-- URL tracking params (UTMs + Meta click ID) for ad attribution — captured on page load -->
+            <input type="hidden" name="utm_source">
+            <input type="hidden" name="utm_medium">
+            <input type="hidden" name="utm_campaign">
+            <input type="hidden" name="utm_content">
+            <input type="hidden" name="fbclid">
+            <p id="address-hint" class="form-hint" hidden></p>
+          </div>
+
+
+          <!-- ══ STEP 2 — contact details + consent ══ -->
+          <div class="form-step step-card" data-step="2" hidden>
+            <p class="step-card-title">Almost done. How should we reach you with your offer?</p>
+            <div class="selected-address" id="selected-address-display">
+              <span class="addr"></span>
+              <button type="button" class="edit">Edit</button>
+            </div>
+            <input type="text" name="fullName" class="form-input" placeholder="Full Name *" required autocomplete="name" aria-label="Full Name">
+            <input type="tel" name="phone" class="form-input" placeholder="Phone Number *" required autocomplete="tel" inputmode="tel" aria-label="Phone Number">
+            <input type="email" name="email" class="form-input" placeholder="Email Address *" required autocomplete="email" inputmode="email" aria-label="Email Address">
+            <select name="timeline" class="form-input" required aria-label="How soon are you looking to sell?">
+              <option value="" disabled selected>Select your timeline *</option>
+              <option value="ASAP">ASAP</option>
+              <option value="Within 30 days">Within 30 days</option>
+              <option value="1-3 months">1-3 months</option>
+              <option value="3-6 months">3-6 months</option>
+              <option value="Just exploring">Just exploring</option>
+            </select>
+
+            <!-- Consent — Terms/Privacy required; the two SMS-consent checkboxes stay OPTIONAL (A2P: SMS consent can never be required) -->
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+              <label class="consent-check">
+                <input type="checkbox" required>
+                <span>I agree to the <a href="/terms-of-service" target="_blank" rel="noopener">Terms of Service</a> and <a href="/privacy-policy" target="_blank" rel="noopener">Privacy Policy</a>. *</span>
+              </label>
+              <label class="consent-check">
+                <input type="checkbox" name="smsConsent">
+                <span>I consent to receive non-marketing text messages from Bingo Home Buyers LLC about my property inquiry, cash offers, and appointment updates. Message frequency may vary, message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+              </label>
+              <label class="consent-check">
+                <input type="checkbox" name="smsPromoConsent">
+                <span>I consent to receive marketing text messages, about special offers, discounts, and service updates, from Bingo Home Buyers LLC at the phone number provided. Message frequency may vary. Message &amp; data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+              </label>
+              <p style="font-size:10.5px;color:#6b7480;line-height:1.5;margin:0;">We don't sell your information. We share limited data with service providers and advertising partners as described in our Privacy Policy.</p>
+            </div>
+            <!-- Always-visible SMS disclosure -->
+            <p style="margin:18px 0 0;font-size:11px;line-height:1.6;color:#5b6573;text-align:center;">
+              <strong style="color:#1a2230;">SMS Disclosure:</strong> By submitting your information to Bingo Home Buyers LLC, you may opt in to receive transactional and promotional text messages about your property inquiry and cash offer. Message frequency may vary. Message &amp; data rates may apply. Reply STOP to unsubscribe, HELP for help. You must be 18 years of age or older to use this SMS service. SMS consent is not required to submit this form or as a condition of any purchase. See our <a href="/privacy-policy" target="_blank" rel="noopener" style="color:#C8272D;">Privacy Policy</a> and <a href="/terms-of-service" target="_blank" rel="noopener" style="color:#C8272D;">Terms of Service</a>.
+            </p>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-block">
+              Get My Cash Offer
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" id="step2-back" class="step-back">&larr; Back to address</button>
+          </div>
+          </form>
+        </div>
+
+      </section>
+    </div>
+
+    <section class="fund-intro" aria-labelledby="situation-title">
+      <div class="wrap fund-grid">
+        <div class="fund-copy">
+          <h2 class="section-title left" id="situation-title">Every Homeowner's Situation Is Different</h2>
+          <p>Whether you're dealing with costly repairs, an inherited property, mounting expenses, or a property you no longer want to maintain, you may have another option.</p>
+          <p>The Bingo Homeowner Relief Fund was created to provide Ohio property owners with a simpler alternative to the traditional selling process.</p>
+          <p>Through private purchasing funds, Bingo Home Buyers can make cash offers on qualifying properties, even those needing significant repairs.</p>
+        </div>
+        <div class="qualify-card">
+          <h3 id="qualify-title">Who May Qualify?</h3>
+          <ul class="qualify-list" aria-labelledby="qualify-title">
+            <li><span class="tick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Ohio homeowners with properties needing costly repairs</li>
+            <li><span class="tick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Owners dealing with unwanted or inherited properties</li>
+            <li><span class="tick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Homeowners looking to eliminate ongoing property expenses</li>
+            <li><span class="tick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Owners who need a more flexible selling timeline</li>
+            <li><span class="tick"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Homeowners exploring alternatives to a traditional listing</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="steps" aria-labelledby="steps-title">
+      <div class="wrap">
+        <h2 class="section-title" id="steps-title">How the Program Works</h2>
+        <ol class="step-grid">
+          <li class="step"><span class="step-num">Step 1</span><h3>Request a Free Property Review</h3><p>Tell us a little about your property and your current situation.</p></li>
+          <li class="step"><span class="step-num">Step 2</span><h3>Receive Your Cash Offer</h3><p>Our team reviews your property's details and determines whether we can make a private cash purchase offer.</p></li>
+          <li class="step"><span class="step-num">Step 3</span><h3>Choose Your Next Step</h3><p>If you accept the offer, sell your property as-is and choose a closing timeline that works for you. There is no obligation to proceed.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="final-cta" aria-labelledby="final-title">
+      <div class="wrap">
+        <h2 id="final-title">Find Out If Your Property Qualifies</h2>
+        <p>Take the first step toward a simpler solution.</p>
+        <a class="btn" href="#lead-form" style="text-decoration:none;">Request My Free Property Review <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <img class="f-logo" src="/Brand_assets/bingo_logo_white.png" width="98" height="52" alt="Bingo Home Buyers">
+      <p class="f-q">Have a question? <a href="tel:+16149645684">(614) 964-5684</a></p>
+      <p class="f-mail"><a href="mailto:info@bingohomebuyers.com">info@bingohomebuyers.com</a> · Serving homeowners across Ohio</p>
+      <p class="f-legal">© 2026 Bingo Home Buyers LLC. All rights reserved. · <a href="/privacy-policy">Privacy Policy</a> · <a href="/terms-of-service">Terms of Service</a></p>
+      <p class="f-disc">Bingo Home Buyers LLC is a real estate investment company that buys houses directly. It is not a licensed real estate brokerage and does not provide legal, tax, or financial advice.</p>
+    </div>
+  </footer>
+
+<script>
+    // ── Two-step lead form: Google Places (New) address autocomplete + GHL webhook ──
+    (function() {
+      const form = document.getElementById('lead-form');
+      if (!form) return;
+
+      const step1   = form.querySelector('[data-step="1"]');
+      const step2   = form.querySelector('[data-step="2"]');
+      const addrInput = document.getElementById('address-input');
+      const sugList = document.getElementById('address-suggestions');
+      const hint    = document.getElementById('address-hint');
+      const nextBtn = document.getElementById('step1-next');
+      const backBtn = document.getElementById('step2-back');
+      const submitBtn = step2.querySelector('button[type="submit"]');
+      const submitBtnHTML = submitBtn.innerHTML;
+      const addrDisplay = document.getElementById('selected-address-display');
+      const subtitle = document.getElementById('form-subtitle');
+
+      const hidden = {
+        address:   form.querySelector('input[name="address"]'),
+        city:      form.querySelector('input[name="city"]'),
+        state:     form.querySelector('input[name="state"]'),
+        zip:       form.querySelector('input[name="zip"]'),
+        formatted: form.querySelector('input[name="formattedAddress"]'),
+      };
+
+      // URL tracking params (UTMs + Meta click ID) for ad attribution. Read once on page
+      // load; absent params default to '' so all five keys always send (like smsConsent).
+      const tracking = {
+        utm_source:   form.querySelector('input[name="utm_source"]'),
+        utm_medium:   form.querySelector('input[name="utm_medium"]'),
+        utm_campaign: form.querySelector('input[name="utm_campaign"]'),
+        utm_content:  form.querySelector('input[name="utm_content"]'),
+        fbclid:       form.querySelector('input[name="fbclid"]'),
+      };
+      const trackParams = new URLSearchParams(window.location.search);
+      Object.keys(tracking).forEach(function(k) { if (tracking[k]) tracking[k].value = trackParams.get(k) || ''; });
+
+      let placeSelected = false;
+
+      // ---- Google Places (New), loaded lazily; degrades to plain text if unavailable ----
+      let placesReady = false, AutocompleteSuggestion, AutocompleteSessionToken, sessionToken;
+      async function ensurePlaces() {
+        if (placesReady) return true;
+        if (typeof google === 'undefined' || !google.maps || !google.maps.importLibrary) return false;
+        try {
+          const lib = await google.maps.importLibrary('places');
+          AutocompleteSuggestion = lib.AutocompleteSuggestion;
+          AutocompleteSessionToken = lib.AutocompleteSessionToken;
+          sessionToken = new AutocompleteSessionToken();
+          placesReady = true;
+          return true;
+        } catch (e) {
+          console.warn('[lead-form] Google Places unavailable — using plain text address:', e);
+          return false;
+        }
+      }
+
+      let currentSuggestions = [], activeIdx = -1, debounceTimer;
+
+      function closeSuggestions() {
+        sugList.hidden = true; sugList.innerHTML = '';
+        currentSuggestions = []; activeIdx = -1;
+        addrInput.setAttribute('aria-expanded', 'false');
+        addrInput.removeAttribute('aria-activedescendant');
+      }
+
+      function renderSuggestions(suggestions) {
+        currentSuggestions = (suggestions || []).filter(s => s.placePrediction);
+        activeIdx = -1;
+        if (!currentSuggestions.length) { closeSuggestions(); return; }
+        sugList.innerHTML = '';
+        currentSuggestions.forEach((s, i) => {
+          const p = s.placePrediction;
+          const li = document.createElement('li');
+          li.className = 'address-suggestion';
+          li.id = 'addr-opt-' + i;
+          li.setAttribute('role', 'option');
+          const main = document.createElement('span');
+          main.className = 'main';
+          main.textContent = p.mainText ? p.mainText.text : (p.text ? p.text.text : '');
+          li.appendChild(main);
+          const secText = p.secondaryText ? p.secondaryText.text : '';
+          if (secText) {
+            const sec = document.createElement('span');
+            sec.className = 'secondary';
+            sec.textContent = secText;
+            li.appendChild(sec);
+          }
+          // mousedown (not click) so it fires before the input blur closes the list
+          li.addEventListener('mousedown', ev => { ev.preventDefault(); selectSuggestion(i); });
+          sugList.appendChild(li);
+        });
+        const attrib = document.createElement('li');
+        attrib.className = 'places-attrib';
+        attrib.innerHTML = '<img alt="Powered by Google" src="https://maps.gstatic.com/mapfiles/api-3/images/powered-by-google-on-non-white3.png">';
+        sugList.appendChild(attrib);
+        sugList.hidden = false;
+        addrInput.setAttribute('aria-expanded', 'true');
+      }
+
+      function setActive(idx) {
+        const items = sugList.querySelectorAll('.address-suggestion');
+        items.forEach(el => el.classList.remove('active'));
+        if (idx >= 0 && idx < items.length) {
+          items[idx].classList.add('active');
+          items[idx].scrollIntoView({ block: 'nearest' });
+          addrInput.setAttribute('aria-activedescendant', 'addr-opt-' + idx);
+        }
+        activeIdx = idx;
+      }
+
+      function parseComponents(components) {
+        const get = type => (components || []).find(c => c.types && c.types.includes(type));
+        const num = get('street_number'), route = get('route');
+        const cityC = get('locality') || get('sublocality_level_1') || get('postal_town') ||
+                      get('administrative_area_level_3') || get('neighborhood');
+        const stateC = get('administrative_area_level_1');
+        const zipC = get('postal_code');
+        return {
+          address1: [num ? num.longText : '', route ? route.longText : ''].filter(Boolean).join(' '),
+          city:  cityC  ? cityC.longText  : '',
+          state: stateC ? stateC.shortText : '',
+          zip:   zipC   ? zipC.longText   : '',
+        };
+      }
+
+      async function selectSuggestion(i) {
+        const s = currentSuggestions[i];
+        if (!s) return;
+        closeSuggestions();
+        try {
+          const place = s.placePrediction.toPlace();
+          await place.fetchFields({ fields: ['addressComponents', 'formattedAddress'] });
+          const parsed = parseComponents(place.addressComponents);
+          hidden.address.value = parsed.address1;
+          hidden.city.value    = parsed.city;
+          hidden.state.value   = parsed.state;
+          hidden.zip.value     = parsed.zip;
+          hidden.formatted.value = place.formattedAddress || '';
+          addrInput.value = place.formattedAddress || addrInput.value;
+          placeSelected = true;
+          hint.hidden = true; hint.classList.remove('error');
+          if (AutocompleteSessionToken) sessionToken = new AutocompleteSessionToken(); // end billing session
+        } catch (e) {
+          console.warn('[lead-form] place details failed; keeping typed text:', e);
+          hidden.address.value = addrInput.value.trim();
+        }
+      }
+
+      async function onAddrInput() {
+        placeSelected = false;
+        const val = addrInput.value.trim();
+        if (val.length < 3) { closeSuggestions(); return; }
+        if (!(await ensurePlaces())) { closeSuggestions(); return; } // plain-text fallback
+        // Intentionally NO locationBias: this lets Google apply its default
+        // IP-based biasing, so suggestions are ranked toward the visitor's
+        // approximate location (nearby addresses first) — the preferred behavior.
+        // includedRegionCodes:['us'] still keeps results US-only. (An out-of-state
+        // owner can still find a distant property by typing the full address; it
+        // just ranks lower than nearby ones.)
+        const base = { input: val, includedRegionCodes: ['us'], sessionToken };
+        try {
+          let res;
+          try {
+            res = await AutocompleteSuggestion.fetchAutocompleteSuggestions(
+              Object.assign({}, base, { includedPrimaryTypes: ['street_address', 'premise', 'subpremise'] }));
+          } catch (typeErr) {
+            // Some accounts reject the type filter — retry unrestricted so suggestions still show
+            res = await AutocompleteSuggestion.fetchAutocompleteSuggestions(base);
+          }
+          renderSuggestions(res.suggestions);
+        } catch (e) {
+          console.warn('[lead-form] autocomplete fetch failed:', e);
+          closeSuggestions();
+        }
+      }
+
+      addrInput.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = setTimeout(onAddrInput, 220); });
+      addrInput.addEventListener('focus', ensurePlaces);
+      addrInput.addEventListener('keydown', e => {
+        if (sugList.hidden) return;
+        const items = sugList.querySelectorAll('.address-suggestion');
+        if (e.key === 'ArrowDown')      { e.preventDefault(); setActive(Math.min(activeIdx + 1, items.length - 1)); }
+        else if (e.key === 'ArrowUp')   { e.preventDefault(); setActive(Math.max(activeIdx - 1, 0)); }
+        else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); selectSuggestion(activeIdx); }
+        else if (e.key === 'Escape')    { closeSuggestions(); }
+      });
+      document.addEventListener('click', e => {
+        if (!sugList.contains(e.target) && e.target !== addrInput) closeSuggestions();
+      });
+
+      // ---- Step navigation (smooth, no reload) ----
+      function showStep(showEl, hideEl, focusEl) {
+        hideEl.hidden = true;
+        showEl.hidden = false;
+        showEl.classList.remove('step-enter'); void showEl.offsetWidth; showEl.classList.add('step-enter');
+        if (focusEl) setTimeout(() => { try { focusEl.focus({ preventScroll: true }); } catch (_) {} }, 70);
+      }
+      function goToStep2() {
+        const val = addrInput.value.trim();
+        if (!val) {
+          hint.textContent = 'Please enter your property address to continue.';
+          hint.classList.add('error'); hint.hidden = false;
+          addrInput.focus();
+          return;
+        }
+        // No structured pick (e.g. a rural address Google didn't suggest): keep the typed text.
+        if (!placeSelected && !hidden.address.value) {
+          hidden.address.value = val;
+          hidden.formatted.value = val;
+        }
+        addrDisplay.querySelector('.addr').textContent = hidden.formatted.value || val;
+        if (subtitle) subtitle.textContent = 'Almost done — how should we reach you with your offer?';
+        closeSuggestions();
+        showStep(step2, step1, form.querySelector('input[name="fullName"]'));
+      }
+      function goToStep1() {
+        if (subtitle) subtitle.textContent = "Enter your address for a free, no-obligation cash offer. We'll reach out shortly.";
+        showStep(step1, step2, addrInput);
+      }
+
+      nextBtn.addEventListener('click', goToStep2);
+      backBtn.addEventListener('click', goToStep1);
+      const editLink = addrDisplay.querySelector('.edit');
+      if (editLink) editLink.addEventListener('click', goToStep1);
+
+      // ---- Phone normalisation (shared by the GHL payload and the CAPI Lead body) ----
+      // Digits only; drop a typed leading US country code (11 digits starting with 1) so it
+      // can't double up as +11…; then +1 plus the 10 digits. Anything that still isn't exactly
+      // 10 digits is sent as its raw digits, unchanged, rather than guessed at.
+      function normalizePhone(raw) {
+        var digits = String(raw || '').replace(/\D/g, '');
+        if (digits.length === 11 && digits.charAt(0) === '1') digits = digits.slice(1);
+        return digits.length === 10 ? '+1' + digits : digits;
+      }
+
+      // ---- Submit → GHL webhook (keepalive fire-and-navigate to /thank-you) ----
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const fullName = (form.fullName.value || '').trim().replace(/\s+/g, ' ');
+        const sp = fullName.indexOf(' ');
+        const firstName = sp === -1 ? fullName : fullName.slice(0, sp);
+        const lastName  = sp === -1 ? '' : fullName.slice(sp + 1);
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending...';
+        submitBtn.style.opacity = '0.6';
+
+        // ---- Meta Pixel Lead (deduped) ----
+        // Generate ONE eventID at the reliable submit moment and share it with the server-side
+        // CAPI Lead below — Meta dedupes browser + server into a single Lead. This submit-time
+        // fire is the ONLY browser Lead (/thank-you fires PageView only; Meta does not dedupe
+        // browser-vs-browser). The whole block is wrapped in try/catch so a pixel failure can
+        // NEVER block the GHL POST below.
+        var leadEventId = '';
+        try {
+          leadEventId = (window.crypto && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : ('lead-' + Date.now() + '-' + Math.random().toString(16).slice(2));
+          if (window.fbq) fbq('track', 'Lead', {}, { eventID: leadEventId });
+        } catch (_) {}
+
+        // Meta advanced-matching cookies for CAPI. _fbp is set by the browser pixel; _fbc is set
+        // from an fbclid click. If the _fbc cookie is absent but the landing URL carries an fbclid,
+        // construct fbc in Meta's documented format: fb.1.{timestamp_ms}.{fbclid}. Empty strings are
+        // harmless — the server skips falsy fbc/fbp (see api/meta-capi-lead.js).
+        function readCookie(name) {
+          var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)'));
+          return m ? decodeURIComponent(m[1]) : '';
+        }
+        var fbp = readCookie('_fbp');
+        var fbc = readCookie('_fbc');
+        if (!fbc) {
+          var fbclidUrl = new URLSearchParams(window.location.search).get('fbclid');
+          if (fbclidUrl) fbc = 'fb.1.' + Date.now() + '.' + fbclidUrl;
+        }
+
+        // Server-side CAPI Lead (ACTIVE) — deduped via the SAME leadEventId as the browser fire above.
+        // Reliable server copy in case the browser pixel is blocked/lost.
+        // Fire-and-forget; keepalive lets it finish as the browser navigates away.
+        fetch('/api/meta-capi-lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          keepalive: true,
+          body: JSON.stringify({
+            eventID: leadEventId,
+            email: form.email.value.trim(),
+            phone: normalizePhone(form.phone.value),
+            eventSourceUrl: window.location.href,
+            fbc: fbc,
+            fbp: fbp
+          })
+        }).catch(function() {});
+
+        const data = {
+          firstName: firstName,
+          lastName:  lastName,
+          name:      fullName,
+          address1:  hidden.address.value.trim(),
+          city:      hidden.city.value.trim(),
+          state:     hidden.state.value.trim(),
+          postalCode: hidden.zip.value.trim(),
+          phone:     normalizePhone(form.phone.value),
+          email:     form.email.value.trim(),
+          timeline:  form.timeline.value,
+          // SMS consent is OPTIONAL (A2P 10DLC: consent checkboxes cannot be required).
+          // Capture the state either way so the lead carries a clear yes/no flag.
+          smsConsent:      (form.smsConsent && form.smsConsent.checked) ? 'Yes' : 'No',
+          smsPromoConsent: (form.smsPromoConsent && form.smsPromoConsent.checked) ? 'Yes' : 'No',
+          source:    'Bingo Relief Fund Page',
+          utm_source:   tracking.utm_source.value,
+          utm_medium:   tracking.utm_medium.value,
+          utm_campaign: tracking.utm_campaign.value,
+          utm_content:  tracking.utm_content.value,
+          fbclid:       tracking.fbclid.value
+        };
+
+        try {
+          const params = new URLSearchParams(data);
+          // Fire-and-navigate: keepalive lets the POST finish as the browser leaves.
+          fetch('https://services.leadconnectorhq.com/hooks/Mc8LKR5wEkc4aWf5o4gd/webhook-trigger/d882f58a-4620-45e7-b153-3acf1179ef05', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params.toString(),
+            mode: 'no-cors',
+            keepalive: true
+          }).catch(function() {});
+
+          // Browser Lead already fired above (deduped with CAPI via the shared eventID);
+          // /thank-you fires PageView only.
+          window.location.href = '/thank-you';
+        } catch (err) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = submitBtnHTML;
+          submitBtn.style.opacity = '1';
+          alert('Something went wrong. Please try again or call us directly.');
+        }
+      });
+    })();
+
+    // ── "Get My Cash Offer" buttons further down: scroll to the hero form and focus the address field ──
+    document.querySelectorAll('a[href="#lead-form"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var hero = document.querySelector('.hero');
+        if (hero) hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        var step1 = document.querySelector('#lead-form [data-step="1"]');
+        var input = document.getElementById('address-input');
+        if (input && step1 && !step1.hidden) setTimeout(function () { try { input.focus({ preventScroll: true }); } catch (_) {} }, 450);
+      });
+    });
+</script>
+</body>
+</html>
