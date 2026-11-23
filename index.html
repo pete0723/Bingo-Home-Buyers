@@ -778,8 +778,6 @@
       }
 
       async function onAddrInput() {
-        placeSelected = false;
-        clearAddressParts();
         const val = addrInput.value.trim();
         if (val.length < 3) { closeSuggestions(); return; }
         if (!(await ensurePlaces())) { closeSuggestions(); return; } // plain-text fallback
@@ -806,7 +804,7 @@
         }
       }
 
-      addrInput.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = setTimeout(onAddrInput, 220); });
+      addrInput.addEventListener('input', () => { placeSelected = false; clearAddressParts(); clearTimeout(debounceTimer); debounceTimer = setTimeout(onAddrInput, 220); });
       addrInput.addEventListener('focus', ensurePlaces);
       addrInput.addEventListener('keydown', e => {
         if (sugList.hidden) { if (e.key === 'Enter') { e.preventDefault(); goToStep2(); } return; }
@@ -828,6 +826,7 @@
         if (focusEl) setTimeout(() => { try { focusEl.focus({ preventScroll: true }); } catch (_) {} }, 70);
       }
       async function goToStep2() {
+        clearTimeout(debounceTimer);
         const val = addrInput.value.trim();
         if (!val) {
           hint.textContent = 'Please enter your property address to continue.';
