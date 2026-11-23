@@ -264,12 +264,6 @@
   .qualify-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
   .qualify-list li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; line-height: 1.5; color: var(--ink); }
   .qualify-list .tick { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: rgba(214,48,49,.12); color: var(--red); margin-top: -2px; }
-  section.steps { padding-block: 72px 88px; background: var(--soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .step-grid { list-style: none; margin: 40px auto 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; max-width: 1100px; }
-  .step { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 26px 24px; box-shadow: var(--shadow); }
-  .step-num { display: inline-block; font-family: var(--font-head); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--red); margin-bottom: 10px; }
-  .step h3 { margin: 0 0 8px; font-family: var(--font-head); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; color: var(--ink); }
-  .step p { margin: 0; font-size: 15.5px; line-height: 1.65; color: #3a4350; }
   section.final-cta { padding-block: 88px; text-align: center; }
   .final-cta h2 { margin: 0 0 10px; font-family: var(--font-head); font-weight: 800; font-size: clamp(30px, 4.4vw, 46px); letter-spacing: -0.035em; line-height: 1.1; color: var(--ink); text-wrap: balance; }
   .final-cta > .wrap > p:first-of-type { margin: 0 0 28px; font-size: 18px; color: var(--muted); }
@@ -278,16 +272,14 @@
   }
   @media (max-width: 900px) {
     .fund-grid { grid-template-columns: 1fr; gap: 32px; }
-    .step-grid { grid-template-columns: 1fr; max-width: 560px; }
-  }
+    }
   @media (max-width: 600px) {
     .hero h1.h1-fund { font-size: 29px; }
     .hero-rating { font-size: 14px; gap: 6px; }
     .hero.hero-fund { min-height: 1000px; background-position: 0 0, 60% bottom; }
     .hero.hero-fund .hero-inner { padding-top: 32px; }
     section.fund-intro, section.final-cta { padding-block: 56px; }
-    section.steps { padding-block: 56px; }
-    .fund-copy p { font-size: 16px; }
+      .fund-copy p { font-size: 16px; }
   }
 
   /* ---------- Footer ---------- */
@@ -478,16 +470,6 @@
       </div>
     </section>
 
-    <section class="steps" aria-labelledby="steps-title">
-      <div class="wrap">
-        <h2 class="section-title" id="steps-title">How the Program Works</h2>
-        <ol class="step-grid">
-          <li class="step"><span class="step-num">Step 1</span><h3>Request a Free Property Review</h3><p>Tell us a little about your property and your current situation.</p></li>
-          <li class="step"><span class="step-num">Step 2</span><h3>Receive Your Cash Offer</h3><p>Our team reviews your property's details and determines whether we can make a private cash purchase offer.</p></li>
-          <li class="step"><span class="step-num">Step 3</span><h3>Choose Your Next Step</h3><p>If you accept the offer, sell your property as-is and choose a closing timeline that works for you. There is no obligation to proceed.</p></li>
-        </ol>
-      </div>
-    </section>
 
     <section class="final-cta" aria-labelledby="final-title">
       <div class="wrap">
@@ -716,8 +698,6 @@
       }
 
       async function onAddrInput() {
-        placeSelected = false;
-        clearAddressParts();
         const val = addrInput.value.trim();
         if (val.length < 3) { closeSuggestions(); return; }
         if (!(await ensurePlaces())) { closeSuggestions(); return; } // plain-text fallback
@@ -744,7 +724,7 @@
         }
       }
 
-      addrInput.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = setTimeout(onAddrInput, 220); });
+      addrInput.addEventListener('input', () => { placeSelected = false; clearAddressParts(); clearTimeout(debounceTimer); debounceTimer = setTimeout(onAddrInput, 220); });
       addrInput.addEventListener('focus', ensurePlaces);
       addrInput.addEventListener('keydown', e => {
         if (sugList.hidden) { if (e.key === 'Enter') { e.preventDefault(); goToStep2(); } return; }
@@ -766,6 +746,7 @@
         if (focusEl) setTimeout(() => { try { focusEl.focus({ preventScroll: true }); } catch (_) {} }, 70);
       }
       async function goToStep2() {
+        clearTimeout(debounceTimer);
         const val = addrInput.value.trim();
         if (!val) {
           hint.textContent = 'Please enter your property address to continue.';
